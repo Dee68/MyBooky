@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyBookyWeb.Models;
 
 namespace MyBookyWeb.Data
 {
@@ -7,6 +8,15 @@ namespace MyBookyWeb.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
             
+        }
+        public DbSet<Category> Categories { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Category>().HasData(
+                new Category { Id=1,Name="Mathematics",DisplayOrder=1},
+                new Category { Id = 2, Name = "Physics", DisplayOrder = 2 },
+                new Category { Id = 3, Name = "History", DisplayOrder = 3 });
         }
     }
 }
