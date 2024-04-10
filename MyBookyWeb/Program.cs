@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MyBookyWeb.Data;
+using MyBookyWeb.DataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

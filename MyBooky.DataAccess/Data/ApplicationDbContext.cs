@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyBookyWeb.Models;
+using MyBooky.Models;
 
-namespace MyBookyWeb.Data
+namespace MyBookyWeb.DataAccess.Data
 {
     public class ApplicationDbContext : DbContext
     {

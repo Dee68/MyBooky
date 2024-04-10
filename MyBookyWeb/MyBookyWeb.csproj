@@ -15,4 +15,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyBooky.DataAccess\MyBooky.DataAccess.csproj" />
+    <ProjectReference Include="..\MyBooky.Utilities\MyBooky.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>

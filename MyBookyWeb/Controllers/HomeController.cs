@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MyBookyWeb.Models;
+using MyBooky.Models;
 using System.Diagnostics;
 
 namespace MyBookyWeb.Controllers
