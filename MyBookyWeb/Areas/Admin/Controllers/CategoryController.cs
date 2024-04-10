@@ -1,19 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyBooky.DataAccess.Repository;
+using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBookyWeb.DataAccess.Data;
 
-namespace MyBookyWeb.Controllers
+namespace MyBookyWeb.Areas.Admin.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitofWork _unitofWork;
+        public CategoryController(IUnitofWork unitofWork)
         {
-            _db = db;
+            _unitofWork = unitofWork;
         }
         public IActionResult Index()
         {
-            List<Category> categories = _db.Categories.ToList();
+            List<Category> categories = _unitofWork.Category.GetAll().ToList();
             return View(categories);
         }
         public IActionResult Create()
@@ -23,14 +25,14 @@ namespace MyBookyWeb.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
-            if(_db.Categories.Any<Category>(Category => Category.Name == obj.Name))
+            if (_unitofWork.Category.GetAll().Any(Category => Category.Name == obj.Name))
             {
                 ModelState.AddModelError("name", "Category already exists.");
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _unitofWork.Category.Add(obj);
+                _unitofWork.Save();
                 TempData["success"] = "Category successfully created";
                 return RedirectToAction("Index");
             }
@@ -42,7 +44,7 @@ namespace MyBookyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Where<Category>(Category => Category.Id == id).FirstOrDefault();
+            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -58,8 +60,8 @@ namespace MyBookyWeb.Controllers
             //}
             if (ModelState.IsValid)
             {
-                _db.Update(obj);
-                _db.SaveChanges(true);
+                _unitofWork.Category.Update(obj);
+                _unitofWork.Save();
                 TempData["success"] = "Category successfully updated";
                 return RedirectToAction("Index");
             }
@@ -71,7 +73,7 @@ namespace MyBookyWeb.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _db.Categories.Where<Category>(Category=>Category.Id == id).FirstOrDefault();
+            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -82,13 +84,13 @@ namespace MyBookyWeb.Controllers
         public IActionResult DeletePost(int? id)
         {
 
-            Category? categoryFromDb = _db.Categories.Find(id);
+            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound(id);
             }
-            _db.Categories.Remove(categoryFromDb);
-            _db.SaveChanges();
+            _unitofWork.Category.Remove(categoryFromDb);
+            _unitofWork.Save();
             TempData["success"] = "Category successfully deleted";
             return RedirectToAction("Index");
         }

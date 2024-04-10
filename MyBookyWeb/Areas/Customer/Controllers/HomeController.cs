@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyBooky.Models;
 using System.Diagnostics;
 
-namespace MyBookyWeb.Controllers
+namespace MyBookyWeb.Areas.Customer.Controllers
 {
     public class HomeController : Controller
     {
