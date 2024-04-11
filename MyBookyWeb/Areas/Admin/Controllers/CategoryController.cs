@@ -54,10 +54,6 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Edit(Category obj)
         {
-            //if (_db.Categories.Any<Category>(Category => Category.Name == obj.Name))
-            //{
-            //    ModelState.AddModelError("name", "Category already exists.");
-            //}
             if (ModelState.IsValid)
             {
                 _unitofWork.Category.Update(obj);
