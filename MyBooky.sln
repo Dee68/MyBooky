@@ -5,11 +5,13 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBookyWeb", "MyBookyWeb\MyBookyWeb.csproj", "{3225C3F0-A66B-4AC1-8280-EBA973503833}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBooky.DataAccess", "MyBooky.DataAccess\MyBooky.DataAccess.csproj", "{FD318F0C-281F-4F43-B1DF-C4536B0C3AC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBooky.DataAccess", "MyBooky.DataAccess\MyBooky.DataAccess.csproj", "{FD318F0C-281F-4F43-B1DF-C4536B0C3AC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBooky.Models", "MyBooky.Models\MyBooky.Models.csproj", "{4C0897F7-83A1-4E20-BFCD-2FD4C93057C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBooky.Models", "MyBooky.Models\MyBooky.Models.csproj", "{4C0897F7-83A1-4E20-BFCD-2FD4C93057C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBooky.Utilities", "MyBooky.Utilities\MyBooky.Utilities.csproj", "{99286F0A-50AF-47B5-9534-D0F90A901039}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBooky.Utilities", "MyBooky.Utilities\MyBooky.Utilities.csproj", "{99286F0A-50AF-47B5-9534-D0F90A901039}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBookyWebUnitTest", "MyBookyWebUnitTest\MyBookyWebUnitTest.csproj", "{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{99286F0A-50AF-47B5-9534-D0F90A901039}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99286F0A-50AF-47B5-9534-D0F90A901039}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99286F0A-50AF-47B5-9534-D0F90A901039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
