@@ -18,7 +18,24 @@ namespace MyBooky.DataAccess.Repository
         }
         public void Update(Product product)
         {
-            _db.Update(product);
+            //_db.Update(product);
+            var productFromDb = _db.Products.FirstOrDefault(u => u.Id == product.Id);
+            if (productFromDb != null)
+            {
+                productFromDb.Title = product.Title;
+                productFromDb.Description = product.Description;
+                productFromDb.ISBN = product.ISBN;
+                productFromDb.CategoryId = product.CategoryId;
+                productFromDb.Author = product.Author;
+                productFromDb.Price = product.Price;
+                productFromDb.ListPrice = product.ListPrice;
+                productFromDb.Price50 = product.Price50;
+                productFromDb.Price100 = product.Price100;
+                if(product.ImageUrl != null)
+                {
+                    productFromDb.ImageUrl = product.ImageUrl;
+                }
+            }
         }
     }
 }

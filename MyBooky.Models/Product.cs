@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace MyBooky.Models
 {
@@ -35,9 +36,9 @@ namespace MyBooky.Models
         //foreign key relation
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
-        //[ValidateNever]
+        [ValidateNever]
         public Category Category { get; set; }
-        //[ValidateNever]
+        [ValidateNever]
         public string? ImageUrl { get; set; }
     }
 }

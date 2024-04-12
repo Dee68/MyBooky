@@ -25,7 +25,7 @@ namespace MyBooky.DataAccess.Repository
         {
             dbSet.Add(item);
         }
-
+        //Category,CategoryId
         public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
         {
             IQueryable<T> query;
@@ -50,7 +50,7 @@ namespace MyBooky.DataAccess.Repository
             }
             return query.FirstOrDefault();
         }
-
+        //Category,CategoryId
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
