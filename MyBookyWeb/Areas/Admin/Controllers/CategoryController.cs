@@ -44,7 +44,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
+            Category? categoryFromDb = _unitofWork.Category.GetById(id.Value);
             if (categoryFromDb == null)
             {
                 return NotFound();
@@ -69,18 +69,23 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
+            Category? categoryFromDb = _unitofWork.Category.GetById(id.Value);
             if (categoryFromDb == null)
             {
                 return NotFound();
             }
             return View(categoryFromDb);
         }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int? id)
-        {
 
-            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePost(int id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            Category categoryFromDb = _unitofWork.Category.GetById(id);
             if (categoryFromDb == null)
             {
                 return NotFound(id);

@@ -21,6 +21,10 @@ namespace MyBooky.DataAccess.Repository
             this.dbSet = _db.Set<T>();
             _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
         }
+        public T GetById(int id)
+        {
+            return dbSet.Find(id);
+        }
         public void Add(T item)
         {
             dbSet.Add(item);
@@ -80,6 +84,11 @@ namespace MyBooky.DataAccess.Repository
             dbSet.Remove(item);
         }
 
+        public void RemoveById(int id)
+        {
+            var item = dbSet.Find(id);
+            dbSet.Remove(item);
+        }
         public void RemoveRange(IEnumerable<T> items)
         {
             dbSet.RemoveRange(items);
