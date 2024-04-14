@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class ProductController : Controller
     {
         private readonly IUnitofWork _unitofWork;

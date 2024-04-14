@@ -6,6 +6,7 @@ using MyBookyWeb.DataAccess.Data;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitofWork _unitofWork;
