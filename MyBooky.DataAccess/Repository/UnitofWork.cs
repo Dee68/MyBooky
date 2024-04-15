@@ -12,12 +12,18 @@ namespace MyBooky.DataAccess.Repository
     {
         private readonly ApplicationDbContext _db;
         public ICategoryRepository Category { get; }
+        public IApplicationUserRepository ApplicationUser { get; set; }
+        public ICompanyRepository Company { get; private set; }
         public IProductRepository Product { get; }
+        public IProductImageRepository ProductImage { get; private set; }
         public UnitofWork(ApplicationDbContext db)
         {
             _db = db;
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
+            ProductImage = new ProductImageRepository(_db);
+            Company = new CompanyRepository(_db);
         }
         
 

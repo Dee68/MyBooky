@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBooky.Models", "MyBooky.M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBooky.Utilities", "MyBooky.Utilities\MyBooky.Utilities.csproj", "{99286F0A-50AF-47B5-9534-D0F90A901039}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBookyWebUnitTest", "MyBookyWebUnitTest\MyBookyWebUnitTest.csproj", "{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBookyWebUnitTest", "MyBookyWebUnitTest\MyBookyWebUnitTest.csproj", "{5BDCBD8E-06BE-4986-B98A-7C7C56BC57CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

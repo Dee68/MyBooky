@@ -10,6 +10,9 @@ namespace MyBooky.DataAccess.Repository.IRepository
     public interface IUnitofWork
     {
         ICategoryRepository Category { get; }
+        IApplicationUserRepository ApplicationUser { get; }
+        ICompanyRepository Company { get; }
+        IProductImageRepository ProductImage { get; }
         IProductRepository Product { get; }
         void Save();
     }
