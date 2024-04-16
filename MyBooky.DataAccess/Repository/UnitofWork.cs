@@ -14,6 +14,7 @@ namespace MyBooky.DataAccess.Repository
         public ICategoryRepository Category { get; }
         public IApplicationUserRepository ApplicationUser { get; set; }
         public ICompanyRepository Company { get; private set; }
+        public IShoppingCartRepository ShoppingCart { get; private set; }
         public IProductRepository Product { get; }
         public IProductImageRepository ProductImage { get; private set; }
         public UnitofWork(ApplicationDbContext db)
@@ -24,6 +25,7 @@ namespace MyBooky.DataAccess.Repository
             ApplicationUser = new ApplicationUserRepository(_db);
             ProductImage = new ProductImageRepository(_db);
             Company = new CompanyRepository(_db);
+            ShoppingCart = new ShoppingCartRepository(_db);
         }
         
 

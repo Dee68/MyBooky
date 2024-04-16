@@ -24,8 +24,14 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         }
         public IActionResult Details(int id)
         {
-            Product product = _unitofWork.Product.Get(u => u.Id==id,includeProperties: "Category");
-            return View(product);
+            ShoppingCart cart = new ShoppingCart()
+            {
+                Product = _unitofWork.Product.Get(u => u.Id==id,includeProperties: "Category"),
+                ProductId = id,
+                Count = 1
+        };
+            
+            return View(cart);
         }
 
 

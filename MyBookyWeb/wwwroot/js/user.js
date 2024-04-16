@@ -1,12 +1,14 @@
-﻿var js = jQuery.noConflict(true);
+﻿//var js = jQuery.noConflict(true);
 var dataTable;
 
-js(document).ready(function () {
+$(document).ready(function () {
     loadDataTable();
 });
 
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
+        "pageLength": 5,
+        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         pagingType: 'simple_numbers',
         language: {
             paginate: {
