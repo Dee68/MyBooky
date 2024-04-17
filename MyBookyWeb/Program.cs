@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 //Connects to database
 builder.Services.AddDbContext<ApplicationDbContext>(options=>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")).UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

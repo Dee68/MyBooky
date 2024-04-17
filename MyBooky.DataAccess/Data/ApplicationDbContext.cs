@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MyBooky.Models;
+using System.Reflection.Emit;
 
 namespace MyBookyWeb.DataAccess.Data
 {
@@ -19,7 +20,11 @@ namespace MyBookyWeb.DataAccess.Data
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
-        { 
+        {
+            builder.Entity<ShoppingCart>()
+            .Property(s => s.Id)
+            .ValueGeneratedOnAdd(); // This ensures auto-increment behavior
+
             base.OnModelCreating(builder);
             builder.Entity<Category>().HasData(
                 new Category { Id=1,Name="Mathematics",DisplayOrder=1},

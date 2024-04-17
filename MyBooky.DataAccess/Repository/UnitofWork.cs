@@ -10,7 +10,7 @@ namespace MyBooky.DataAccess.Repository
 {
     public class UnitofWork : IUnitofWork
     {
-        private readonly ApplicationDbContext _db;
+        private ApplicationDbContext _db;
         public ICategoryRepository Category { get; }
         public IApplicationUserRepository ApplicationUser { get; set; }
         public ICompanyRepository Company { get; private set; }
@@ -20,17 +20,19 @@ namespace MyBooky.DataAccess.Repository
         public UnitofWork(ApplicationDbContext db)
         {
             _db = db;
+            ProductImage = new ProductImageRepository(_db);
+            ApplicationUser = new ApplicationUserRepository(_db);
+            ShoppingCart = new ShoppingCartRepository(_db);
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
-            ApplicationUser = new ApplicationUserRepository(_db);
-            ProductImage = new ProductImageRepository(_db);
             Company = new CompanyRepository(_db);
-            ShoppingCart = new ShoppingCartRepository(_db);
+            
         }
         
 
         public void Save()
         {
+            
             _db.SaveChanges();
         }
     }

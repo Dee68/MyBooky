@@ -247,7 +247,7 @@ namespace MyBookyWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -299,7 +299,7 @@ namespace MyBookyWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
 
                     b.HasData(
                         new
@@ -379,7 +379,7 @@ namespace MyBookyWeb.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -445,7 +445,7 @@ namespace MyBookyWeb.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("MyBooky.Models.ShoppingCart", b =>
@@ -475,7 +475,7 @@ namespace MyBookyWeb.Migrations
 
                     b.HasIndex("productId");
 
-                    b.ToTable("ShoppingCarts");
+                    b.ToTable("ShoppingCarts", (string)null);
                 });
 
             modelBuilder.Entity("MyBooky.Models.ApplicationUser", b =>

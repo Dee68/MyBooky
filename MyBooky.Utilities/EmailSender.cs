@@ -24,7 +24,7 @@ namespace MyBooky.Utilities
 
             var client = new SendGridClient(SendGridSecret);
 
-            var from = new EmailAddress("hello@bookyshop.com", "Booky");
+            var from = new EmailAddress("testmetoday100@gmail.com", "MyBooky");
             var to = new EmailAddress(email);
             var message = MailHelper.CreateSingleEmail(from, to, subject, "", htmlMessage);
 
