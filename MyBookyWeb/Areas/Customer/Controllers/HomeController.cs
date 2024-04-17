@@ -47,7 +47,6 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             shoppingCart.ApplicationUserId = userId;
-            //_unitofWork.ShoppingCart.Add(shoppingCart);
             
             //check if product already in cart
             ShoppingCart cartFromDb = _unitofWork.ShoppingCart.Get(u => u.ApplicationUserId == userId &&

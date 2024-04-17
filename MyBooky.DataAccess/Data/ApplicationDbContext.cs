@@ -16,14 +16,16 @@ namespace MyBookyWeb.DataAccess.Data
         public DbSet<Company> Companies { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<OrderHead> OrderHeads { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<ProductImage> ProductImages { get; set; }
         public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<ShoppingCart>()
-            .Property(s => s.Id)
-            .ValueGeneratedOnAdd(); // This ensures auto-increment behavior
+            //builder.Entity<ShoppingCart>()
+            //.Property(s => s.Id)
+            //.ValueGeneratedOnAdd(); // This ensures auto-increment behavior
 
             base.OnModelCreating(builder);
             builder.Entity<Category>().HasData(
