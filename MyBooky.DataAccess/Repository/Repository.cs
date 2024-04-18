@@ -54,6 +54,7 @@ namespace MyBooky.DataAccess.Repository
             }
             return query.FirstOrDefault();
         }
+
         //Category,CategoryId
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter, string? includeProperties = null)
         {

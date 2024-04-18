@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
 using MyBooky.Utilities;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace MyBookyWeb.Areas.Customer.Controllers
@@ -170,15 +169,73 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             {
                 //it is a regular customer account and we need to capture payment
                 //stripe logic
+                var domain = "https://localhost:7117/";
+                var options = new SessionCreateOptions
+                {
+                    SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVm.OrderHead.Id}",
+                    CancelUrl = domain + $"Customer/Cart/index",
+                    LineItems = new List<SessionLineItemOptions>(),
+                    Mode = "payment"
+                };
+                foreach (var item in ShoppingCartVm.ShoppingCartList)
+                {
+                    var sessionLineItem = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.Price * 100),
+                            Currency = "eur",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Product.Title
+                            }
+                        },
+                        Quantity = item.Count
+                    };
+                    options.LineItems.Add(sessionLineItem);
+                }
+
+                var service = new SessionService();
+                Session session = service.Create(options);
+                _unitofWork.OrderHead.UpdateStripePaymentID(ShoppingCartVm.OrderHead.Id, session.Id, session.PaymentIntentId);
+                _unitofWork.Save();
+                Response.Headers.Append("Location", session.Url);
+                return new StatusCodeResult(303);
             }
 
 
             return RedirectToAction(nameof(OrderConfirmation), new {id=ShoppingCartVm.OrderHead.Id });
-            //redirect to orderConfirmation page
+           
 		}
 
         public IActionResult OrderConfirmation(int id)
         {
+            OrderHead orderHead = _unitofWork.OrderHead.Get(u => u.Id == id, includeProperties: "ApplicationUser");
+            if (orderHead.PaymentStatus != SD.PaymentStatusDelayedPayment)
+            {
+                //this is an order by a customer
+
+                var service = new SessionService();
+                Session session = service.Get(orderHead.SessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitofWork.OrderHead.UpdateStripePaymentID(id, session.Id, session.PaymentIntentId);
+                    _unitofWork.OrderHead.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
+                    _unitofWork.Save();
+                }
+                //HttpContext.Session.Clear();
+
+            }
+            //_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - MyBooky",
+            //    $"<p>New Order Created - {orderHeader.Id}</p>");
+
+            List<ShoppingCart> shoppingCarts = _unitofWork.ShoppingCart
+                .GetAll(u => u.ApplicationUserId == orderHead.ApplicationUserId).ToList();
+
+            _unitofWork.ShoppingCart.RemoveRange(shoppingCarts);
+            _unitofWork.Save();
+
             return View(id);
         }
 		private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)

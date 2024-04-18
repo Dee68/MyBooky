@@ -398,8 +398,8 @@ namespace MyBookyWeb.Migrations
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("PaymentDueDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("PaymentDueDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
@@ -409,6 +409,9 @@ namespace MyBookyWeb.Migrations
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SessionId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ShippingDate")
