@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
@@ -14,10 +16,13 @@ namespace MyBookyWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitofWork _unitofWork;
-        public ShoppingCartVm ShoppingCartVm { get; set; }
-        public CartController(IUnitofWork unitofWork)
+		private readonly IEmailSender _emailSender;
+		[BindProperty]
+		public ShoppingCartVm ShoppingCartVm { get; set; }
+        public CartController(IUnitofWork unitofWork, IEmailSender emailSender)
         {
             _unitofWork = unitofWork;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -98,7 +103,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
 			ShoppingCartVm.OrderHead.Name = ShoppingCartVm.OrderHead.ApplicationUser.Name;
 			ShoppingCartVm.OrderHead.StreetAddress = ShoppingCartVm.OrderHead.ApplicationUser.StreetAddress;
-			ShoppingCartVm.OrderHead.City = ShoppingCartVm. OrderHead.ApplicationUser.City;
+			ShoppingCartVm.OrderHead.City = ShoppingCartVm.OrderHead.ApplicationUser.City;
 			ShoppingCartVm.OrderHead.State = ShoppingCartVm.OrderHead.ApplicationUser.State;
 			ShoppingCartVm.OrderHead.PostalCode = ShoppingCartVm.OrderHead.ApplicationUser.PostalCode;
 
@@ -111,7 +116,72 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
 			return View(ShoppingCartVm);
         }
-        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        [HttpPost]
+        [ActionName("Summary")]
+		public IActionResult SummaryPost()
+		{
+			//get the userId
+			var claimsIdentity = (ClaimsIdentity)User.Identity;
+			var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ShoppingCartVm.ShoppingCartList = _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
+                includeProperties: "Product");
+
+            ShoppingCartVm.OrderHead.OrderDate = System.DateTime.Now;
+			ShoppingCartVm.OrderHead.ApplicationUserId = userId;
+
+			ApplicationUser applicationUser = _unitofWork.ApplicationUser.Get(u => u.Id == userId);
+
+
+			//for each cartitem get their order total
+			foreach (var cart in ShoppingCartVm.ShoppingCartList)
+			{
+				cart.Price = GetPriceBasedOnQuantity(cart);
+				ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
+			}
+
+			if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+			{
+				//it is a regular customer 
+				ShoppingCartVm.OrderHead.PaymentStatus = SD.PaymentStatusPending;
+				ShoppingCartVm.OrderHead.OrderStatus = SD.StatusPending;
+			}
+			else
+			{
+				//it is a company user
+				ShoppingCartVm.OrderHead.PaymentStatus = SD.PaymentStatusDelayedPayment;
+				ShoppingCartVm.OrderHead.OrderStatus = SD.StatusApproved;
+			}
+			_unitofWork.OrderHead.Add(ShoppingCartVm.OrderHead);
+			_unitofWork.Save();
+			foreach (var cart in ShoppingCartVm.ShoppingCartList)
+			{
+				OrderDetail orderDetail = new()
+				{
+					ProductId = cart.ProductId,
+					OrderHeadId = ShoppingCartVm.OrderHead.Id,
+					Price = cart.Price,
+					Count = cart.Count
+				};
+				_unitofWork.OrderDetail.Add(orderDetail);
+				_unitofWork.Save();
+			}
+            if (applicationUser.CompanyId.GetValueOrDefault() == 0)
+            {
+                //it is a regular customer account and we need to capture payment
+                //stripe logic
+            }
+
+
+            return RedirectToAction(nameof(OrderConfirmation), new {id=ShoppingCartVm.OrderHead.Id });
+            //redirect to orderConfirmation page
+		}
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
+        }
+		private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Count <= 50)
             {
