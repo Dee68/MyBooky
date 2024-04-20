@@ -36,12 +36,19 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 OrderHead = new ()
 
             };
+
+            if (!ShoppingCartVm.ShoppingCartList.Any())
+            {
+                TempData["error"] = "Your cart is empty";
+               //t return RedirectToAction("Index", "HomeController");
+            }
             //for each cartitem get their order total
             foreach (var cart in ShoppingCartVm.ShoppingCartList)
             {
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
             }
+            
             return View(ShoppingCartVm);
         }
         public IActionResult Plus(int cartId)

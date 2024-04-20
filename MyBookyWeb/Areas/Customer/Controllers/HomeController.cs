@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Utilities;
@@ -59,18 +59,20 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 cartFromDb.Count += shoppingCart.Count;
                 //update cart
                 _unitofWork.ShoppingCart.Update(cartFromDb);
-               
+                _unitofWork.Save();
+
 
             }
             else
             {
                 //product not in cart
                 _unitofWork.ShoppingCart.Add(shoppingCart);
-                
+                _unitofWork.Save();
                 HttpContext.Session.SetInt32(SD.SessionCart,
                 _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
+                
             }
-            _unitofWork.Save();
+           
             TempData["success"] = "Product successfully added to cart.";
             return RedirectToAction(nameof(Index));
         }
