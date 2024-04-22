@@ -231,7 +231,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                     _unitofWork.OrderHead.UpdateStatus(id, SD.StatusApproved, SD.PaymentStatusApproved);
                     _unitofWork.Save();
                 }
-                //HttpContext.Session.Clear();
+                HttpContext.Session.Clear();
 
             }
             //_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - MyBooky",

@@ -16,8 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 //Connects to database
-builder.Services.AddDbContext<ApplicationDbContext>(options=>
-options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")).UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
+//.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -29,7 +30,11 @@ builder.Services.AddSession(options =>
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
-builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+}).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+//.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 
 // Register IUserEmailStore<IdentityUser> service
 builder.Services.AddScoped<IUserEmailStore<IdentityUser>, UserStore<IdentityUser, IdentityRole, ApplicationDbContext, string>>();
@@ -37,6 +42,10 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+});
+builder.Services.AddAuthentication().AddFacebook(option => {
+    option.AppId = "2867553820077119";
+    option.AppSecret = "4cf792a7af3cc6de703796a2e8bec3de";
 });
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitofWork,UnitofWork>();
