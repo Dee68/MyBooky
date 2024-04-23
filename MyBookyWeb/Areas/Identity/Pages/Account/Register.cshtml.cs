@@ -186,14 +186,12 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                    _logger.Log(LogLevel.Warning, callbackUrl, userId);
-                    Console.WriteLine("callbackurl: ",callbackUrl, "UserId: ", userId);
+                  
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        TempData["success"] = "Please Check your email to confirm your account";
-                        return Page();
-                        //return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                       
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else
                     {

@@ -32,7 +32,7 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true;
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 //.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 
@@ -50,6 +50,8 @@ builder.Services.AddAuthentication().AddFacebook(option => {
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitofWork,UnitofWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.Configure<MailgunSettings>(builder.Configuration.GetSection("Mailgun"));
+
 
 var app = builder.Build();
 
@@ -64,6 +66,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
 
 app.UseRouting();
 app.UseAuthentication();

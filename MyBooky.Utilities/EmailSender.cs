@@ -1,34 +1,48 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
-using SendGrid.Helpers.Mail;
-using SendGrid;
+using RestSharp;
+using RestSharp.Authenticators;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+
 
 namespace MyBooky.Utilities
 {
     public class EmailSender : IEmailSender
     {
-        public string SendGridSecret { get; set; }
+        public string MailgunApiKey { get; set; }
+        public string MailgunDomain { get; set; }
 
         public EmailSender(IConfiguration _config)
         {
-            SendGridSecret = _config.GetValue<string>("SendGrid:SecretKey");
+            MailgunApiKey = _config.GetValue<string>("Mailgun:ApiKey");
+            MailgunDomain = _config.GetValue<string>("Mailgun:Domain");
+
         }
+
+
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            //logic to send email
 
-            var client = new SendGridClient(SendGridSecret);
+            RestClient client = new RestClient("https://api.mailgun.net/v3");
+            RestRequest request = new RestRequest();
 
-            var from = new EmailAddress("testmetoday100@gmail.com", "MyBooky");
-            var to = new EmailAddress(email);
-            var message = MailHelper.CreateSingleEmail(from, to, subject, "", htmlMessage);
+            // Set up authentication
+            string apiKey = "api:" + MailgunApiKey;
+            request.AddHeader("Authorization", "Basic " + Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes(apiKey)));
 
-            return client.SendEmailAsync(message);
+            // Set up request parameters
+            request.AddParameter("domain", MailgunDomain, ParameterType.UrlSegment);
+            request.Resource = "{domain}/messages";
+            request.AddParameter("from", "Mybooky <postmaster@me.mrdee.org>");
+            request.AddParameter("to", email);
+            request.AddParameter("subject", subject);
+            request.AddParameter("html", htmlMessage);
+            request.Method = Method.Post;
+
+            // Execute the request asynchronously and return the resulting task
+            return client.ExecuteAsync(request);
         }
+
     }
 }
