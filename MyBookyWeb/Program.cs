@@ -6,7 +6,6 @@ using MyBooky.DataAccess.Repository.IRepository;
 using MyBookyWeb.DataAccess.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.Extensions.Logging;
 using MyBooky.Utilities;
 using Stripe;
 
