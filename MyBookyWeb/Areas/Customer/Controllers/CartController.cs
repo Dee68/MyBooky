@@ -234,8 +234,8 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 HttpContext.Session.Clear();
 
             }
-            //_emailSender.SendEmailAsync(orderHeader.ApplicationUser.Email, "New Order - MyBooky",
-            //    $"<p>New Order Created - {orderHeader.Id}</p>");
+            _emailSender.SendEmailAsync(orderHead.ApplicationUser.Email, "New Order - MyBooky",
+                $"<p>New Order Created - {orderHead.Id}</p>");
 
             List<ShoppingCart> shoppingCarts = _unitofWork.ShoppingCart
                 .GetAll(u => u.ApplicationUserId == orderHead.ApplicationUserId).ToList();
