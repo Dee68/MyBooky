@@ -71,7 +71,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 {
                     applicationUser.CompanyId = null;
                 }
-                //_unitOfWork.ApplicationUser.Update(applicationUser);
+                _unitofWork.ApplicationUser.Update(applicationUser);
                 _unitofWork.Save();
 
                 _userManager.RemoveFromRoleAsync(applicationUser, oldRole).GetAwaiter().GetResult();
@@ -83,7 +83,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 if (oldRole == SD.Role_Company && applicationUser.CompanyId != roleManagmentVM.ApplicationUser.CompanyId)
                 {
                     applicationUser.CompanyId = roleManagmentVM.ApplicationUser.CompanyId;
-                    //_unitOfWork.ApplicationUser.Update(applicationUser);
+                    _unitofWork.ApplicationUser.Update(applicationUser);
                     _unitofWork.Save();
                 }
             }
@@ -135,7 +135,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             {
                 objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
             }
-            //_unitOfWork.ApplicationUser.Update(objFromDb);
+            _unitofWork.ApplicationUser.Update(objFromDb);
             _unitofWork.Save();
             return Json(new { success = true, message = "Operation Successful" });
         }

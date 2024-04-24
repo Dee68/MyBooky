@@ -31,7 +31,9 @@ builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Str
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
+    //options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequiredLength = 8;
+   
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 //.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
 

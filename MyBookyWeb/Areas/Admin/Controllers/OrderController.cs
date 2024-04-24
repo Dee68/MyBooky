@@ -135,8 +135,8 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 .GetAll(u => u.OrderHeadId == OrderVm.OrderHead.Id, includeProperties: "Product");
 
             //stripe logic
-            //var domain = Request.Scheme + "://" + Request.Host.Value + "/";
-            var domain = "https://localhost:7117/";
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+            //var domain = "https://localhost:7117/";
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVm.OrderHead.Id}",

@@ -105,6 +105,12 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 				OrderHead = new()
 
 			};
+            if (!ShoppingCartVm.ShoppingCartList.Any())
+            {
+                TempData["error"] = "Your cart is empty you can not proceed";
+                return RedirectToAction(nameof(Index));
+            }
+
             ShoppingCartVm.OrderHead.ApplicationUser = _unitofWork.ApplicationUser.Get(u => u.Id == userId);
 
 			ShoppingCartVm.OrderHead.Name = ShoppingCartVm.OrderHead.ApplicationUser.Name;
@@ -176,7 +182,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             {
                 //it is a regular customer account and we need to capture payment
                 //stripe logic
-                var domain = "https://localhost:7117/";
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new SessionCreateOptions
                 {
                     SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVm.OrderHead.Id}",
