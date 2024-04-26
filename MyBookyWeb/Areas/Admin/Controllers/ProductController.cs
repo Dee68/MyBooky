@@ -33,8 +33,16 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                     Text = u.Name,
                     Value = u.Id.ToString()
                 }),
-                Product = new Product()
+                Product = new Product(),
+                IdInDatabase = true
             };
+            // Check if productVm is null
+            if (productVm == null)
+            {
+                // Handle the case where productVm is null
+                TempData["error"] = "Error creating/updating product: ProductVm is null.";
+                return RedirectToAction("Index");
+            }
             if (id == null || id == 0)
             {
                 //create
@@ -42,16 +50,39 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             }
             else
             {
-                //update
-                productVm.Product = _unitofWork.Product.Get(u => u.Id == id, includeProperties:"ProductImages");
+                var existingProduct = _unitofWork.Product.Get(u => u.Id == id, includeProperties: "ProductImages");
+                if (existingProduct == null)
+                {
+                    // Product with the given ID does not exist in the database
+                    TempData["error"] = "Product not found.";
+                    productVm.IdInDatabase = false;
+                    return View(productVm);
+                }
+
+                // Populate productVm with existing product data
+                productVm.Product = existingProduct;
+
+                productVm.IdInDatabase = true;
                 return View(productVm);
             }
         }
         [HttpPost]
         public IActionResult Upsert(ProductVm productVm, List<IFormFile>? files)
         {
+            if (productVm == null)
+            {
+                // Handle the case where productVm is null
+                TempData["error"] = "Bad request";
+                return RedirectToAction("Index");
+            }
             if (ModelState.IsValid)
             {
+                if (productVm.Product == null)
+                {
+                    // Handle the case where productVm.Product is null
+                    TempData["error"] = "Bad request";
+                    return RedirectToAction("Index");
+                }
                 if (productVm.Product.Id == 0)
                 {
                     _unitofWork.Product.Add(productVm.Product);
