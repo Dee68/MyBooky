@@ -457,9 +457,6 @@ namespace MyBookyWeb.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("ListPrice")
                         .HasColumnType("float");
 
@@ -490,7 +487,6 @@ namespace MyBookyWeb.Migrations
                             CategoryId = 1,
                             Description = "In this groundbreaking work of science, history, and archaeology, Charles C. Mann radically alters our understanding of the Americas before the arrival of Columbus in 1492.",
                             ISBN = "98767114J3900",
-                            ImageUrl = "",
                             ListPrice = 16.0,
                             Price = 18.0,
                             Price100 = 12.0,
@@ -504,7 +500,6 @@ namespace MyBookyWeb.Migrations
                             CategoryId = 3,
                             Description = "Here is the classic, much-read introduction to the craft and history of mathematics by E.T. Bell, a leading figure in mathematics in America for half a century.",
                             ISBN = "9780075549437",
-                            ImageUrl = "",
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price100 = 20.0,
@@ -518,7 +513,6 @@ namespace MyBookyWeb.Migrations
                             CategoryId = 3,
                             Description = "According to Einstein himself, this book is intended \"to give an exact insight into the theory of Relativity to those readers who, from a general scientific and philosophical point of view, are interested in the theory, but who are not conversant with the mathematical apparatus of theoretical physics.",
                             ISBN = "9785375549437",
-                            ImageUrl = "",
                             ListPrice = 30.0,
                             Price = 27.0,
                             Price100 = 20.0,

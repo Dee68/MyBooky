@@ -23,14 +23,14 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category");
+            IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
             return View(products);
         }
         public IActionResult Details(int id)
         {
             ShoppingCart cart = new ShoppingCart()
             {
-                Product = _unitofWork.Product.Get(u => u.Id==id,includeProperties: "Category"),
+                Product = _unitofWork.Product.Get(u => u.Id==id,includeProperties: "Category,ProductImages"),
                 ProductId = id,
                 Count = 1
         };

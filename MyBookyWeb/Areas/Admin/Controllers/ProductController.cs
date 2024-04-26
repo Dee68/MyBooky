@@ -43,41 +43,15 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             else
             {
                 //update
-                productVm.Product = _unitofWork.Product.Get(u => u.Id == id);
+                productVm.Product = _unitofWork.Product.Get(u => u.Id == id, includeProperties:"ProductImages");
                 return View(productVm);
             }
         }
         [HttpPost]
-        public IActionResult Upsert(ProductVm productVm, IFormFile? file)
+        public IActionResult Upsert(ProductVm productVm, List<IFormFile>? files)
         {
             if (ModelState.IsValid)
             {
-                //get www root path
-                string wwwRoothPath = _webHostEnvironment.WebRootPath;
-                if (file != null)
-                {
-                    //get a random number for image name
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    //set the path to save image
-                    string productPath = Path.Combine(wwwRoothPath, @"images\product");
-                    if (!string.IsNullOrEmpty(productVm.Product.ImageUrl))
-                    {
-                        //delete old image
-                        var oldImagePath = Path.Combine(wwwRoothPath, productVm.Product.ImageUrl.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-
-                        }
-
-                    }
-                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                    {
-                        file.CopyTo(fileStream);
-                    }
-                    // get and save image url to product
-                    productVm.Product.ImageUrl = @"\images\product\" + fileName;
-                }
                 if (productVm.Product.Id == 0)
                 {
                     _unitofWork.Product.Add(productVm.Product);
@@ -90,7 +64,42 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 }
 
                 _unitofWork.Save();
+                //get www root path
+                string wwwRoothPath = _webHostEnvironment.WebRootPath;
+                if (files != null)
+                {
+                    foreach (IFormFile file in files)
+                    {
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        //append product id to image file
+                        string productPath = @"images\product" + productVm.Product.Id;
+                        string finalPath = Path.Combine(wwwRoothPath, productPath);
 
+                        if (!Directory.Exists(finalPath))
+                            Directory.CreateDirectory(finalPath);
+                        using (var fileStream = new FileStream(Path.Combine(finalPath, fileName), FileMode.Create))
+                        {
+                            file.CopyTo(fileStream);
+                        }
+                        ProductImage productImage = new()
+                        {
+                            ImageUrl = @"\" + productPath + @"\" + fileName,
+                            ProductId = productVm.Product.Id,
+                        };
+
+                        if (productVm.Product.ProductImages == null)
+                            productVm.Product.ProductImages = new List<ProductImage>();
+
+                        productVm.Product.ProductImages.Add(productImage);
+
+                    }
+
+                    _unitofWork.Product.Update(productVm.Product);
+                    _unitofWork.Save();
+                    
+                }
+
+                TempData["success"] = "Product created/updated successfully";
                 return RedirectToAction("Index");
             }
             else
@@ -105,7 +114,32 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 
         }
 
-       
+        public IActionResult DeleteImage(int imageId)
+        {
+            var imageToBeDeleted = _unitofWork.ProductImage.Get(u => u.Id == imageId);
+            int productId = imageToBeDeleted.ProductId;
+            if (imageToBeDeleted != null)
+            {
+                if (!string.IsNullOrEmpty(imageToBeDeleted.ImageUrl))
+                {
+                    var oldImagePath =
+                                   Path.Combine(_webHostEnvironment.WebRootPath,
+                                   imageToBeDeleted.ImageUrl.TrimStart('\\'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                _unitofWork.ProductImage.Remove(imageToBeDeleted);
+                _unitofWork.Save();
+
+                TempData["success"] = "Deleted successfully";
+            }
+
+            return RedirectToAction(nameof(Upsert), new { id = productId });
+        }
 
         #region API CALLS
 
@@ -119,21 +153,31 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int? id)
         {
-            var productToDelete = _unitofWork.Product.Get(u => u.Id == id);
-            if (productToDelete == null)
+            var productToBeDeleted = _unitofWork.Product.Get(u => u.Id == id);
+            if (productToBeDeleted == null)
             {
-                return Json(new { success = false, message = "Error while deleting product" });
+                return Json(new { success = false, message = "Error while deleting" });
             }
-            var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, productToDelete.ImageUrl.TrimStart('\\'));
-            if (System.IO.File.Exists(oldImagePath))
-            {
-                System.IO.File.Delete(oldImagePath);
 
+            string productPath = @"images\products\product-" + id;
+            string finalPath = Path.Combine(_webHostEnvironment.WebRootPath, productPath);
+
+            if (Directory.Exists(finalPath))
+            {
+                string[] filePaths = Directory.GetFiles(finalPath);
+                foreach (string filePath in filePaths)
+                {
+                    System.IO.File.Delete(filePath);
+                }
+
+                Directory.Delete(finalPath);
             }
-            _unitofWork.Product.Remove(productToDelete);
+
+
+            _unitofWork.Product.Remove(productToBeDeleted);
             _unitofWork.Save();
-            return Json(new { success = true, message = "Product successfully deleted" });
 
+            return Json(new { success = true, message = "Delete Successful" });
         }
         #endregion
     }

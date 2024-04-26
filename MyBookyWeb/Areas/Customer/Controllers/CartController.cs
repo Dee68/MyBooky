@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
@@ -34,21 +35,18 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 ShoppingCartList = _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId,
                 includeProperties: "Product"),
                 OrderHead = new ()
-
             };
 
-            if (!ShoppingCartVm.ShoppingCartList.Any())
-            {
-                TempData["error"] = "Your cart is empty";
-               //t return RedirectToAction("Index", "HomeController");
-            }
-            //for each cartitem get their order total
+            IEnumerable<ProductImage> productImages = _unitofWork.ProductImage.GetAll();
+
             foreach (var cart in ShoppingCartVm.ShoppingCartList)
             {
+                cart.Product.ProductImages = productImages.Where(u => u.ProductId == cart.Product.Id).ToList();
                 cart.Price = GetPriceBasedOnQuantity(cart);
                 ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
             }
-            
+           
+
             return View(ShoppingCartVm);
         }
         public IActionResult Plus(int cartId)

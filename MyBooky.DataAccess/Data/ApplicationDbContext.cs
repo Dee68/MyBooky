@@ -23,10 +23,7 @@ namespace MyBookyWeb.DataAccess.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<ShoppingCart>()
-            //.Property(s => s.Id)
-            //.ValueGeneratedOnAdd(); // This ensures auto-increment behavior
-
+           
             base.OnModelCreating(builder);
             builder.Entity<Category>().HasData(
                 new Category { Id=1,Name="Mathematics",DisplayOrder=1},
@@ -78,7 +75,6 @@ namespace MyBookyWeb.DataAccess.Data
                    Price50 = 14,
                    Price100 = 12,
                    CategoryId = 1,
-                   ImageUrl = "",
                    ProductImages = []
                },
                 new Product
@@ -93,7 +89,6 @@ namespace MyBookyWeb.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 3,
-                    ImageUrl = "",
                     ProductImages = []
                 },
                 new Product
@@ -108,7 +103,6 @@ namespace MyBookyWeb.DataAccess.Data
                     Price50 = 25,
                     Price100 = 20,
                     CategoryId = 3,
-                    ImageUrl = "",
                     ProductImages = []
                 });
         }
