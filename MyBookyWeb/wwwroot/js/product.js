@@ -1,5 +1,5 @@
-﻿var js = jQuery.noConflict(true);
-var dataTable;
+﻿let js = jQuery.noConflict(true);
+let dataTable;
 js(document).ready(function () {
     loadDataTable();
 });
