@@ -61,23 +61,23 @@ namespace MyBooky.DataAccess.DbInitializer
         {
             var adminEmail = "admin@gmail.com";
 
-            // Check if admin user exists
+            // Check if admin user does not exists
             if (_userManager.FindByEmailAsync(adminEmail).GetAwaiter().GetResult() == null)
             {
                 // Generate a random temporary password
                 var temporaryPassword = GenerateTemporaryPassword();
-
                 // Create admin user
                 var adminUser = new ApplicationUser
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    Name = "Dimie Egberipou",
-                    PhoneNumber = "1112223333",
-                    StreetAddress = "test 123 Ave",
+                    Name = "Admin Admin",
+                    PhoneNumber = "24242424242",
+                    StreetAddress = "admin 123 Ave",
                     State = "Bayelsa",
-                    PostalCode = "23422",
-                    City = "Yenegoa"
+                    PostalCode = "24424",
+                    City = "Yenegoa",
+                    EmailConfirmed = true
                 };
 
                 var result = _userManager.CreateAsync(adminUser, temporaryPassword).GetAwaiter().GetResult();
@@ -96,9 +96,6 @@ namespace MyBooky.DataAccess.DbInitializer
         }
         private string GenerateTemporaryPassword()
         {
-            // Generate a random temporary password (you can use any logic here)
-            //var temporaryPassword = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 10);
-            // For example, you can use a library like System.Security.Cryptography to generate a random password
             return "Temp@1432"; // Change this to use your actual password generation logic
         }
     } 

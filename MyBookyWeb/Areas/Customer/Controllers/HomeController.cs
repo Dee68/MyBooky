@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
@@ -25,6 +25,26 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         {
             IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
             return View(products);
+        }
+        [HttpGet]
+        public IActionResult Index(string? query)
+        {
+            var productsEnumerable = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
+            IQueryable<Product> products = productsEnumerable.AsQueryable();
+            if (products == null || !products.Any())
+            {
+                return Problem("There are no books yet in the database");
+            }
+            
+            if (!String.IsNullOrEmpty(query))
+            {
+                query = query.Trim().ToLower();
+                products = products.Where(q => q.Title!.ToLower().Contains(query) 
+                || q.Author!.ToLower().Contains(query) || q.ISBN!.Contains(query) 
+                || q.Category!.Name!.ToLower().Contains(query) || q.Price.ToString().Contains(query));
+            }
+            var searchedProducts = products.ToList();
+            return View(searchedProducts);
         }
         public IActionResult Details(int id)
         {

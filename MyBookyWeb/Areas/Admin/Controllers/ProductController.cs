@@ -5,10 +5,13 @@ using MyBooky.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MyBooky.Models.ViewModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using MyBooky.Utilities;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitofWork _unitofWork;

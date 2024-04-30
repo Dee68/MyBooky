@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
+using MyBooky.Utilities;
 using MyBookyWeb.DataAccess.Data;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitofWork _unitofWork;
@@ -26,6 +29,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult Create(Category obj)
         {
+            //Check if category name already in database
             if (_unitofWork.Category.GetAll().Any(Category => Category.Name == obj.Name))
             {
                 ModelState.AddModelError("name", "Category already exists.");
