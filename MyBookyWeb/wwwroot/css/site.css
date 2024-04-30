@@ -11,6 +11,14 @@ for details on configuring this project to bundle and minify static web assets. 
     box-shadow: 0 -2px;
 }
 
+.pagination-container {
+    margin-bottom:50px;
+}
+.page-item.active .page-link {
+    background-color: #192E2F;
+    color: #fff;
+}
+
 
 /* The overlay effect with black background */
 

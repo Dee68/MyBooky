@@ -6,6 +6,7 @@ using MyBooky.Models;
 using MyBooky.Utilities;
 using System.Diagnostics;
 using System.Security.Claims;
+using MyBooky.Models.ViewModels;
 
 namespace MyBookyWeb.Areas.Customer.Controllers
 {
@@ -27,7 +28,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             return View(products);
         }
         [HttpGet]
-        public IActionResult Index(string? query)
+        public IActionResult Index(string? query, int page = 1, int pageSize=4)
         {
             var productsEnumerable = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
             IQueryable<Product> products = productsEnumerable.AsQueryable();
@@ -35,16 +36,33 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             {
                 return Problem("There are no books yet in the database");
             }
+            //Filter result based on search query
             
             if (!String.IsNullOrEmpty(query))
             {
                 query = query.Trim().ToLower();
                 products = products.Where(q => q.Title!.ToLower().Contains(query) 
-                || q.Author!.ToLower().Contains(query) || q.ISBN!.Contains(query) 
-                || q.Category!.Name!.ToLower().Contains(query) || q.Price.ToString().Contains(query));
+                || q.Author!.ToLower().Contains(query) 
+                || q.ISBN!.Contains(query) 
+                || q.Category!.Name!.ToLower().Contains(query) 
+                || q.Price.ToString().Contains(query));
             }
-            var searchedProducts = products.ToList();
-            return View(searchedProducts);
+            //paginate result
+            var paginatedProducts = products.Skip((page -1)*pageSize).Take(pageSize).ToList();
+            // Calculate total number of pages
+            var totalProducts = products.Count();
+            var totalPages = (int)Math.Ceiling(totalProducts/(double)pageSize);
+            //pass paginated data to view model
+            var viewModel = new ProductListVm
+            {
+                Products = paginatedProducts,
+                PageNumber = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+
+            
+            return View(viewModel);
         }
         public IActionResult Details(int id)
         {

@@ -1,15 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Product>
+@model ProductListVm
 <form method="get" asp-controller="Home" asp-action="Index">
     <div class="input-group w-80 pb-3">
         <input type="text" class="form-control" placeholder="Search..." name="query">
         <button class="btn btn-primary bg-primary" type="submit">Search </button>
     </div>
 </form>
-<div class="row pb-3 album py-5 bg-body-tertiary">
-    @foreach (var item in Model)
+<div class="row pb-3 album py-5 bg-body-tertiary mb-5">
+    @foreach (var item in Model.Products)
     {
         <div class="col-lg-3 col-sm-6">
             <div class="row p-2">
@@ -39,5 +39,18 @@
             </div>
         </div>
     }
-</div>
 
+</div>
+@* <div class="pagination-container mb-4"> *@
+<!-- Pagination controls -->
+    <nav aria-label="Page navigation" class="pagination-container mb-4">
+        <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= Model.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="?page=@i&query=@ViewBag.Query">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+@* </div> *@
