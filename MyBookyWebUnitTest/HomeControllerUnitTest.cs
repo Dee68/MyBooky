@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Http;
 using Xunit;
-using System.Collections.Generic;
-using System;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Hosting;
@@ -16,6 +14,8 @@ using Castle.Core.Logging;
 using MyBookyWeb.Areas.Customer.Controllers;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http.HttpResults;
+using MyBooky.Utilities;
+using System.Security.Claims;
 
 namespace MyBookyWebUnitTest
 {
@@ -69,10 +69,10 @@ namespace MyBookyWebUnitTest
 
             var _unitofwork = new Mock<IUnitofWork>();
             var logger = new Mock<ILogger<HomeController>>();
-           
+
             _unitofwork.Setup(u => u.Product.GetAll(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>())).Returns(productList);
 
-            var homeCtrl = new HomeController(logger.Object,_unitofwork.Object);
+            var homeCtrl = new HomeController(logger.Object, _unitofwork.Object);
             //Action
             var results = homeCtrl.Index();
             // Assert
@@ -140,5 +140,78 @@ namespace MyBookyWebUnitTest
             Assert.Equal("There are no books yet in the database", problemDetails.Detail);
         }
 
+        [Fact]
+        public void Details_Returns_Correct_View_With_Cart_Model()
+        {
+            // Arrange
+            var id = 1;
+            var product = new Product { Id = id, Title = "Test Product", Category = new Category { Name = "TestCategory" } };
+            var shoppingCart = new ShoppingCart { Product = product, ProductId = id, Count = 1 };
+
+            var unitOfWorkMock = new Mock<IUnitofWork>();
+            var logger = new Mock<ILogger<HomeController>>();
+            unitOfWorkMock.Setup(u => u.Product.Get(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>(), false)).Returns(product);
+
+            var homeCtrl = new HomeController(logger.Object, unitOfWorkMock.Object);
+
+            // Act
+            var result = homeCtrl.Details(id) as ViewResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.IsType<ViewResult>(result);
+            Assert.Equal("Details", result.ViewName ?? string.Empty);
+            Assert.IsType<ShoppingCart>(result.Model);
+
+            var model = result.Model as ShoppingCart;
+            Assert.Equal(shoppingCart.ProductId, model.ProductId);
+        }
+        [Fact]
+        public void Details_Adds_Product_To_Cart_When_Not_Already_In_Cart()
+        {
+            // Arrange
+            var shoppingCart = new ShoppingCart
+            {
+                ProductId = 1,
+                Count = 1
+            };
+
+            var userId = "user123"; // Mock user ID
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            };
+            var claimsIdentity = new ClaimsIdentity(claims, "TestAuth");
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Session = new TestSession();
+            httpContext.User = claimsPrincipal;
+            httpContext.Request.Host = new HostString("localhost");
+            var controllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var unitOfWorkMock = new Mock<IUnitofWork>();
+            var logger = new Mock<ILogger<HomeController>>();
+            unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false)).Returns((ShoppingCart)null); // Cart not found in database
+
+            var controller = new HomeController(logger.Object, unitOfWorkMock.Object)
+            {
+                ControllerContext = controllerContext
+            };
+            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+            // Act
+            var result = controller.Details(shoppingCart) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Product successfully added to cart.", controller.TempData["success"]);
+        }
+
     }
+
 }

@@ -73,45 +73,65 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 Count = 1
         };
             
-            return View(cart);
+            return View("Details",cart);
         }
         [HttpPost]
         [Authorize]
         public IActionResult Details(ShoppingCart shoppingCart)
         {
             shoppingCart.Id = 0;//corrects identity_insert set to off error
-            //retriev logged in user Id
-           var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            shoppingCart.ApplicationUserId = userId;
-            
-            //check if product already in cart
-            ShoppingCart cartFromDb = _unitofWork.ShoppingCart.Get(u => u.ApplicationUserId == userId &&
-            u.ProductId == shoppingCart.ProductId);
-
-            if (cartFromDb != null)
+                                //retriev logged in user Id
+            var claimsIdentity = User.Identity as ClaimsIdentity;
+            if (claimsIdentity == null || !claimsIdentity.IsAuthenticated)
             {
-                //product already in cart
-                //get count of product in cart and update new count
-                cartFromDb.Count += shoppingCart.Count;
-                //update cart
-                _unitofWork.ShoppingCart.Update(cartFromDb);
-                _unitofWork.Save();
+                // Redirect to the login page
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userIdClaim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            //check if userId is not null
+            if (userIdClaim != null)
+            {
+                var userId = userIdClaim.Value;
+                shoppingCart.ApplicationUserId = userId;
+
+                //check if product already in cart
+                ShoppingCart cartFromDb = _unitofWork.ShoppingCart.Get(u => u.ApplicationUserId == userId &&
+                u.ProductId == shoppingCart.ProductId);
+
+                if (cartFromDb != null)
+                {
+                    //product already in cart
+                    //get count of product in cart and update new count
+                    cartFromDb.Count += shoppingCart.Count;
+                    //update cart
+                    _unitofWork.ShoppingCart.Update(cartFromDb);
+                    _unitofWork.Save();
 
 
+                }
+                else
+                {
+                    //product not in cart
+                    _unitofWork.ShoppingCart.Add(shoppingCart);
+                    _unitofWork.Save();
+                    HttpContext.Session.SetInt32(SD.SessionCart,
+                    _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
+
+                }
+                
+                
+
+                TempData["success"] = "Product successfully added to cart.";
             }
             else
             {
-                //product not in cart
-                _unitofWork.ShoppingCart.Add(shoppingCart);
-                _unitofWork.Save();
-                HttpContext.Session.SetInt32(SD.SessionCart,
-                _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
-                
+                // go back to login page
+                return RedirectToAction("Login", "Account");
+
+
             }
-           
-            TempData["success"] = "Product successfully added to cart.";
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Privacy()
