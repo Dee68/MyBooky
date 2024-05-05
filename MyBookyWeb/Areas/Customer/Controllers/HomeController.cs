@@ -34,7 +34,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             IQueryable<Product> products = productsEnumerable.AsQueryable();
             if (products == null || !products.Any())
             {
-                return Problem("There are no books yet in the database");
+                return Problem("There are no books yet in the database",null,404);
             }
             //Filter result based on search query
             
@@ -44,8 +44,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 products = products.Where(q => q.Title!.ToLower().Contains(query) 
                 || q.Author!.ToLower().Contains(query) 
                 || q.ISBN!.Contains(query) 
-                || q.Category!.Name!.ToLower().Contains(query) 
-                || q.Price.ToString().Contains(query));
+                || q.Category!.Name!.ToLower().Contains(query));
             }
             //paginate result
             var paginatedProducts = products.Skip((page -1)*pageSize).Take(pageSize).ToList();
@@ -58,7 +57,8 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 Products = paginatedProducts,
                 PageNumber = page,
                 PageSize = pageSize,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                Query = query
             };
 
             

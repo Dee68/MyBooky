@@ -8,6 +8,8 @@
         <button class="btn btn-primary bg-primary" type="submit">Search </button>
     </div>
 </form>
+ @if(Model.Products.Any())
+ {
 <div class="row pb-3 album py-5 bg-body-tertiary mb-5">
     @foreach (var item in Model.Products)
     {
@@ -39,9 +41,7 @@
             </div>
         </div>
     }
-
 </div>
-@* <div class="pagination-container mb-4"> *@
 <!-- Pagination controls -->
     <nav aria-label="Page navigation" class="pagination-container mb-4">
         <ul class="pagination justify-content-center">
@@ -52,5 +52,11 @@
             </li>
         }
     </ul>
-</nav>
-@* </div> *@
+    </nav>
+}
+else
+{
+    <div class="alert alert-warning text-center" role="alert">
+        <h3>No results found for the search term: <strong>@Model.Query</strong>.</h3>
+    </div>
+}

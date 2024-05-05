@@ -44,7 +44,6 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         {
             OrderHead orderHeadFromDb = _unitofWork.OrderHead.Get(u => u.Id == OrderVm.OrderHead.Id);
             orderHeadFromDb.Name = OrderVm.OrderHead.Name;
-            //orderHeadFromDb.PhoneNumber = OrderVm.OrderHead.PhoneNumber;
             orderHeadFromDb.StreetAddress = OrderVm.OrderHead.StreetAddress;
             orderHeadFromDb.City = OrderVm.OrderHead.City;
             orderHeadFromDb.State = OrderVm.OrderHead.State;
@@ -136,7 +135,6 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 
             //stripe logic
             var domain = Request.Scheme + "://" + Request.Host.Value + "/";
-            //var domain = "https://localhost:7117/";
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVm.OrderHead.Id}",

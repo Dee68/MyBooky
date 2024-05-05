@@ -225,7 +225,6 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             if (orderHead.PaymentStatus != SD.PaymentStatusDelayedPayment)
             {
                 //this is an order by a customer
-
                 var service = new SessionService();
                 Session session = service.Get(orderHead.SessionId);
 
