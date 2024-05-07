@@ -54,6 +54,14 @@ jobs:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
+      - name: List Contents of Directory
+        run: |
+          ls -l ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest
+
+      - name: Print Current Working Directory
+        run: pwd
+       
+
       - name: Test with dotnet
         run: dotnet test
 
