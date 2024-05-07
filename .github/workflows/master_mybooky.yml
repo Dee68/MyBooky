@@ -32,9 +32,12 @@ jobs:
       - name: publish app for deploy
         run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-      - name: Print published directory contents
+      - name: Print folders in published directory
         run: |
-          dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          $directories = Get-ChildItem -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -Directory
+          foreach ($dir in $directories) {
+            Write-Host "Folder: $($dir.Name)"
+          }
 
 
       # - name: Upload artifact for deployment job
