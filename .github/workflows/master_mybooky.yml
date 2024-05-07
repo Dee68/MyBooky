@@ -10,7 +10,7 @@ on:
 
 env:
    AZURE_WEBAPP_NAME: mybooky
-   AZURE_WEBAPP_PACKAGE_PATH: './myapp'
+   AZURE_WEBAPP_PACKAGE_PATH: './published'
    NETCORE_VERSION: '8.x'
 
 jobs:
@@ -26,25 +26,28 @@ jobs:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
+      - name: Restore
+        run: dotnet restore
+
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --no restore -c Release
 
       - name: publish app for deploy
         run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-      - name: Print folders in published directory
-        run: |
-          $directories = Get-ChildItem -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -Directory
-          foreach ($dir in $directories) {
-            Write-Host "Folder: $($dir.Name)"
-          }
+      # - name: Print folders in published directory
+      #   run: |
+      #     $directories = Get-ChildItem -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -Directory
+      #     foreach ($dir in $directories) {
+      #       Write-Host "Folder: $($dir.Name)"
+      #     }
 
 
-      # - name: Upload artifact for deployment job
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: .net-app
-      #     path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
+      - name: upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.azure_webapp_package_path}}
 
   # test:
   #   runs-on: windows-latest
@@ -82,23 +85,23 @@ jobs:
       #     name: test-results
       #     path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest/TestResults
 
-  # deploy:
-  #   runs-on: windows-latest
-  #   needs: [build, test]
-  #   environment:
-  #     name: 'Production'
-  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  deploy:
+    runs-on: windows-latest
+    needs: [build]
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-  #   steps:
-  #     - name: Download artifact from build job
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: .net-app
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
       
-  #     - name: Deploy to Azure Web App
-  #       uses: azure/webapps-deploy@v2
-  #       with:
-  #         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-  #         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-  #         package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWeb
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
           
