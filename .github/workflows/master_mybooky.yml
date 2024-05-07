@@ -35,13 +35,6 @@ jobs:
       - name: publish app for deploy
         run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-      # - name: Print folders in published directory
-      #   run: |
-      #     $directories = Get-ChildItem -Path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -Directory
-      #     foreach ($dir in $directories) {
-      #       Write-Host "Folder: $($dir.Name)"
-      #     }
-
 
       - name: upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -49,41 +42,6 @@ jobs:
           name: .net-app
           path: ${{env.azure_webapp_package_path}}
 
-  # test:
-  #   runs-on: windows-latest
-  #   needs: build
-
-  #   steps:
-  #     - name: Download artifact from build job
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: .net-app
-      
-  #     - name: Set up .NET Core
-  #       uses: actions/setup-dotnet@v1
-  #       with:
-  #         dotnet-version: ${{ env.NETCORE_VERSION }}
-  #         include-prerelease: true
-
-      # - name: List Contents of Directory
-      #   run: |
-      #     ls -l ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest
-
-      # - name: Print Current Working Directory
-      #   run: pwd
-       
-
-      # - name: Navigate to test project directory
-      #   run: cd ./MyBooky/MyBookyWebUnitTest
-
-      # - name: Test with dotnet
-      #   run: dotnet test ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWebUnitTest/MyBookyWebUnitTest.csproj
-
-      # - name: Upload test results
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: test-results
-      #     path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest/TestResults
 
   deploy:
     runs-on: windows-latest
