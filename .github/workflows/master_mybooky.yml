@@ -30,7 +30,7 @@ jobs:
         run: dotnet restore
 
       - name: Build with dotnet
-        run: dotnet build --no restore -c Release
+        run: dotnet build --no-restore -c Release
 
       - name: publish app for deploy
         run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
