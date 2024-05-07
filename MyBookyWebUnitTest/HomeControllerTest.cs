@@ -5,7 +5,6 @@ using MyBooky.Models;
 using MyBookyWeb.Areas.Customer.Controllers;
 using MyBooky.Models.ViewModels;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;

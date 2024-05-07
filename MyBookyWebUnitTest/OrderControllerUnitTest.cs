@@ -84,64 +84,6 @@ namespace MyBookyWebUnitTest
             Assert.Null(problemDetails.Title);
             Assert.Null(problemDetails.Instance);
 
-            // Assert
-            //Assert.NotNull(result);
-            //Assert.Equal("Details", result.ActionName);
-            //Assert.Equal("Admin", result.RouteValues["area"]); // Assuming "Admin" is the area
-            //Assert.Equal(orderId, result.RouteValues["orderId"]);
-
-            // Assert that the order status is updated to "In Process"
-            //mockUnitOfWork.Verify(uow => uow.OrderHead.UpdateStatus(orderId, SD.StatusInProcess), Times.Once);
-
-            // Assert that changes are saved
-           // mockUnitOfWork.Verify(uow => uow.Save(), Times.Once);
-
-            // Assert that a success message is set in TempData
-           // Assert.Equal("Order Details Updated Successfully.", controller.TempData["Success"]);
         }
-        //[Fact]
-        //public void StartProcessing_ReturnsRedirectToDetailsWithCorrectOrderId()
-        //{
-        //    // Arrange
-        //    var mockUnitOfWork = new Mock<IUnitofWork>();
-        //    var controller = new OrderController(mockUnitOfWork.Object);
-        //    //ApplicationUser
-        //    var applicationUser = new ApplicationUser
-        //    {
-        //        Id = "userId123",
-        //        UserName = "testuser@example.com",
-        //    };
-        //    var orderId = 1;
-        //    var orderHead = new OrderHead
-        //    {
-        //        Id = orderId,
-        //        Name = "John Doe",
-        //        StreetAddress = "123 Main St",
-        //        City = "Anytown",
-        //        State = "NY",
-        //        PostalCode = "12345",
-        //        ApplicationUser = applicationUser
-        //    };
-        //    // Assign the OrderHead to OrderVm
-        //    var orderVm = new OrderVm
-        //    {
-        //        OrderHead = orderHead
-        //    };
-
-        //    controller.OrderVm = orderVm;
-
-        //    //Act
-        //    var result = controller.StartProcessing() as RedirectToActionResult;
-
-        //    // Assert
-        //    Assert.NotNull(result);
-        //    Assert.Equal("Details", result.ActionName);
-        //    Assert.Equal("Admin", result.RouteValues["area"]); // Assuming "Admin" is the area
-        //    Assert.Equal(orderId, result.RouteValues["orderId"]);
-
-
-        //}
-
-
     }
 }
