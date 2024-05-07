@@ -60,6 +60,9 @@ jobs:
       - name: Navigate to test project directory
         run: cd MyBooky/MyBookyWebUnitTest
 
+      - name: Test with dotnet
+        run: dotnet test MyBookyWebUnitTest.csproj
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
