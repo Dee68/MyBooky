@@ -27,7 +27,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View("Index");
         }
         public IActionResult Details(int orderId)
         {
@@ -69,6 +69,10 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult StartProcessing()
         {
+            if(OrderVm.OrderHead == null || OrderVm.OrderHead == null) 
+            {
+                return Problem("Bad request", null, 404);
+            }
             _unitofWork.OrderHead.UpdateStatus(OrderVm.OrderHead.Id, SD.StatusInProcess);
             _unitofWork.Save();
             TempData["Success"] = "Order Details Updated Successfully.";
