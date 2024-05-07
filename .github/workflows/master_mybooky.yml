@@ -32,11 +32,11 @@ jobs:
       - name: publish app for deploy
         run: dotnet publish -c Release -o ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-      # - name: Upload artifact for deployment job
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: .net-app
-      #     path: ${{env.DOTNET_ROOT}}/myapp
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: .net-app
+          path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
   test:
     runs-on: windows-latest
@@ -56,6 +56,12 @@ jobs:
 
       - name: Test with dotnet
         run: dotnet test
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: TestResults
 
   deploy:
     runs-on: windows-latest
