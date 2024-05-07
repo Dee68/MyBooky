@@ -61,7 +61,7 @@ jobs:
         run: cd ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBookyWebUnitTest
 
       - name: Test with dotnet
-        run: dotnet test MyBookyWebUnitTest.csproj
+        run: dotnet test ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBookyWebUnitTest/MyBookyWebUnitTest.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
