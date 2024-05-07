@@ -64,7 +64,7 @@ jobs:
        
 
       - name: Navigate to test project directory
-        run: cd ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWebUnitTest
+        run: cd ./myapp/MyBooky/MyBookyWebUnitTest
 
       - name: Test with dotnet
         run: dotnet test ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWebUnitTest/MyBookyWebUnitTest.csproj
