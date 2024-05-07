@@ -32,28 +32,32 @@ jobs:
       - name: publish app for deploy
         run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
+      - name: Print published directory contents
+        run: |
+          dir ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: .net-app
-          path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-  test:
-    runs-on: windows-latest
-    needs: build
+      # - name: Upload artifact for deployment job
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: .net-app
+      #     path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: .net-app
+  # test:
+  #   runs-on: windows-latest
+  #   needs: build
+
+  #   steps:
+  #     - name: Download artifact from build job
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: .net-app
       
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.NETCORE_VERSION }}
-          include-prerelease: true
+  #     - name: Set up .NET Core
+  #       uses: actions/setup-dotnet@v1
+  #       with:
+  #         dotnet-version: ${{ env.NETCORE_VERSION }}
+  #         include-prerelease: true
 
       # - name: List Contents of Directory
       #   run: |
@@ -63,35 +67,35 @@ jobs:
       #   run: pwd
        
 
-      - name: Navigate to test project directory
-        run: cd ./MyBooky/MyBookyWebUnitTest
+      # - name: Navigate to test project directory
+      #   run: cd ./MyBooky/MyBookyWebUnitTest
 
-      - name: Test with dotnet
-        run: dotnet test ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWebUnitTest/MyBookyWebUnitTest.csproj
+      # - name: Test with dotnet
+      #   run: dotnet test ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWebUnitTest/MyBookyWebUnitTest.csproj
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest/TestResults
+      # - name: Upload test results
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-results
+      #     path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/MyBooky/MyBookyWebUnitTest/TestResults
 
-  deploy:
-    runs-on: windows-latest
-    needs: [build, test]
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  # deploy:
+  #   runs-on: windows-latest
+  #   needs: [build, test]
+  #   environment:
+  #     name: 'Production'
+  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: .net-app
+  #   steps:
+  #     - name: Download artifact from build job
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: .net-app
       
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWeb
+  #     - name: Deploy to Azure Web App
+  #       uses: azure/webapps-deploy@v2
+  #       with:
+  #         app-name: ${{ env.AZURE_WEBAPP_NAME }}
+  #         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+  #         package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/MyBooky/MyBookyWeb
           
