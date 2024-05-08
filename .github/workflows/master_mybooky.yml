@@ -72,7 +72,7 @@ jobs:
         run: dotnet build --no-restore -c Release ${{ env.MAIN_PROJECTS_DIR }}
 
       - name: Publish main projects
-        run: dotnet publish -c Release -o MyBookyWeb/myapp MyBookyWeb.csproj
+        run: dotnet publish -c Release -o ${{ env.MAIN_PROJECTS_DIR }}
 
 
   deploy:
