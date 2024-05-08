@@ -16,16 +16,16 @@ env:
 
 jobs:
   build_test_project:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET Core SDK
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
+          include-prerelease: true
 
       - name: Cache dependencies for test project
         uses: actions/cache@v2
@@ -38,22 +38,24 @@ jobs:
       - name: Restore test project
         run: dotnet restore ${{ env.TEST_PROJECT_DIR }}
 
+      - name: Build test project
+        run: dotnet build --no-restore -c Release ${{ env.TEST_PROJECT_DIR }}
+
       - name: Publish test project
-        run: |
-          cd ${{ env.TEST_PROJECT_DIR }}
-          dotnet publish --configuration Release --no-build --output ./bin/Release/net8.0
+        run: dotnet publish --configuration Release --no-build --output ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
 
   build_main_projects:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Setup .NET Core SDK
+      - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
+          include-prerelease: true
 
       - name: Cache dependencies for main projects
         uses: actions/cache@v2
@@ -66,13 +68,14 @@ jobs:
       - name: Restore main projects
         run: dotnet restore ${{ env.MAIN_PROJECTS_DIR }}
 
+      - name: Build main projects
+        run: dotnet build --no-restore -c Release ${{ env.MAIN_PROJECTS_DIR }}
+
       - name: Publish main projects
-        run: |
-          cd ${{ env.MAIN_PROJECTS_DIR }}
-          dotnet publish --configuration Release --no-build --output ./myapp
+        run: dotnet publish --configuration Release --no-build --output ./myapp
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: [build_test_project, build_main_projects]
     environment:
       name: 'Production'
@@ -89,6 +92,20 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: main-app
-          path: ${{ env.MAIN_PROJECTS_DIR }}/myapp
+          path: ./myapp
 
-      # Add deployment steps here
+      - name: Deploy test project to Azure Web App
+        id: deploy-test-project-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
+      - name: Deploy main projects to Azure Web App
+        id: deploy-main-projects-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./myapp
