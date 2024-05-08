@@ -1,6 +1,6 @@
 # Building, testing and deploying to Azure.
 
-name: Build,Test and Deploy ASP.Net Core MVC app to Azure
+name: Build, Test, and Deploy ASP.Net Core MVC app to Azure
 
 on:
   push:
@@ -9,12 +9,13 @@ on:
   workflow_dispatch:
 
 env:
-   AZURE_WEBAPP_NAME: mybooky
-   AZURE_WEBAPP_PACKAGE_PATH: '.'
-   NETCORE_VERSION: '8.x'
+  AZURE_WEBAPP_NAME: mybooky
+  TEST_PROJECT_DIR: 'MyBookyWebUnitTest'
+  MAIN_PROJECTS_DIR: 'MyBookyWeb'
+  NETCORE_VERSION: '8.x'
 
 jobs:
-  build:
+  build_test_project:
     runs-on: windows-latest
 
     steps:
@@ -26,49 +27,85 @@ jobs:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
-      - name: Set up dependency caching for faster builds
+      - name: Cache dependencies for test project
         uses: actions/cache@v2
-        with: 
-          path: ~/.nuget/packages
-          key: ${{runner.os}}-nuget-${{hashFiles('**/packages.lock.json')}}
-          restore-keys: |
-            ${{runner.os}}-nuget-
-
-      - name: Restore
-        run: dotnet restore
-
-      - name: Build with dotnet
-        run: dotnet build --no-restore -c Release
-        working-directory: MyBookyWeb
-
-      - name: publish app for deploy
-        run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/myapp
-
-
-      - name: upload artifact for deployment job
-        uses: actions/upload-artifact@v3
         with:
-          name: .net-app
-          path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/myapp
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
+      - name: Restore test project
+        run: dotnet restore ${{ env.TEST_PROJECT_DIR }}
+
+      - name: Build test project
+        run: dotnet build --no-restore -c Release ${{ env.TEST_PROJECT_DIR }}
+
+      - name: Publish test project
+        run: dotnet publish --configuration Release --no-build --output ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
+
+  build_main_projects:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+          include-prerelease: true
+
+      - name: Cache dependencies for main projects
+        uses: actions/cache@v2
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore main projects
+        run: dotnet restore ${{ env.MAIN_PROJECTS_DIR }}
+
+      - name: Build main projects
+        run: dotnet build --no-restore -c Release ${{ env.MAIN_PROJECTS_DIR }}
+
+      - name: Publish main projects
+        run: dotnet publish --configuration Release --no-build --output ./myapp
 
   deploy:
     runs-on: windows-latest
-    needs: [build]
+    needs: [build_test_project, build_main_projects]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
+      - name: Download artifact from test project build job
         uses: actions/download-artifact@v3
         with:
-          name: .net-app
-      
-      - name: Deploy to Azure Web App
+          name: test-app
+          path: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
+      - name: Download artifact from main projects build job
+        uses: actions/download-artifact@v3
+        with:
+          name: main-app
+          path: ./myapp
+
+      - name: Deploy test project to Azure Web App
+        id: deploy-test-project-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
-          
+          package: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
+      - name: Deploy main projects to Azure Web App
+        id: deploy-main-projects-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./myapp
