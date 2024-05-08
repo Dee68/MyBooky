@@ -87,7 +87,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: test-app
-          path: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+          path: ${{ env.TEST_PROJECT_DIR }}
 
       - name: Download artifact from main projects build job
         uses: actions/download-artifact@v3
