@@ -26,21 +26,30 @@ jobs:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
+      - name: Set up dependency caching for faster builds
+        uses: actions/cache@v2
+        with: 
+          path: ~/.nuget/packages
+          key: ${{runner.os}}-nuget-${{hashFiles('**/packages.lock.json')}}
+          restore-keys: |
+            ${{runner.os}}-nuget-
+
       - name: Restore
         run: dotnet restore
 
       - name: Build with dotnet
         run: dotnet build --no-restore -c Release
+        working-directory: MyBookyWeb
 
       - name: publish app for deploy
-        run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}
+        run: dotnet publish --configuration Release --no-build --output ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/myapp
 
 
       - name: upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{env.azure_webapp_package_path}}
+          path: ${{env.AZURE_WEBAPP_PACKAGE_PATH}}/myapp
 
 
   deploy:
@@ -51,12 +60,13 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      # - name: Download artifact from build job
-      #   uses: actions/download-artifact@v3
-      #   with:
-      #     name: .net-app
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: .net-app
       
       - name: Deploy to Azure Web App
+        id: deploy to webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
