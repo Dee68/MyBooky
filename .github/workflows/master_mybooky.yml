@@ -77,17 +77,17 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: [build_test_project, build_main_projects]
+    needs: [build_main_projects]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from test project build job
-        uses: actions/download-artifact@v3
-        with:
-          name: test-app
-          path: ${{ env.TEST_PROJECT_DIR }}
+      # - name: Download artifact from test project build job
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: test-app
+      #     path: ${{ env.TEST_PROJECT_DIR }}
 
       - name: Download artifact from main projects build job
         uses: actions/download-artifact@v3
@@ -95,13 +95,13 @@ jobs:
           name: main-app
           path: ${{ env.MAIN_PROJECTS_DIR }}
 
-      - name: Deploy test project to Azure Web App
-        id: deploy-test-project-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+      # - name: Deploy test project to Azure Web App
+      #   id: deploy-test-project-to-webapp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+      #     package: ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
 
       - name: Deploy main projects to Azure Web App
         id: deploy-main-projects-to-webapp
