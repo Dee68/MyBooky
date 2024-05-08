@@ -12,5 +12,12 @@ namespace MyBooky.Models.ViewModels
         public ApplicationUser ApplicationUser { get; set; }
         public IEnumerable<SelectListItem> RoleList { get; set; }
         public IEnumerable<SelectListItem> CompanyList { get; set; }
+
+        public RoleManagementVM() 
+        {
+            RoleList = new List<SelectListItem>();
+            CompanyList = new List<SelectListItem>();
+            ApplicationUser = new ApplicationUser();
+        }
     }
 }

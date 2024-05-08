@@ -9,12 +9,12 @@ namespace MyBooky.Models
     {
         public int Id { get; set; }
         [Required]
-        public string? Title { get; set; }
-        public string? Description { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
         [Required]
-        public string? ISBN { get; set; }
+        public string ISBN { get; set; }
         [Required]
-        public string? Author { get; set; }
+        public string Author { get; set; }
 
         [Required, DisplayName("List Price"), Range(1, 1000)]
         public double ListPrice { get; set; }
@@ -34,5 +34,13 @@ namespace MyBooky.Models
         public Category Category { get; set; }
         [ValidateNever]
         public List<ProductImage>? ProductImages { get; set; }
+
+        public Product()
+        {
+            Title = string.Empty;
+            Description = string.Empty;
+            ISBN = string.Empty;
+            Author = string.Empty;
+        }
     }
 }

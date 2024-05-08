@@ -11,5 +11,11 @@ namespace MyBooky.Models
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
+
+        public ProductImage() 
+        {
+            Product = new Product();
+            ImageUrl = string.Empty;
+        }
     }
 }

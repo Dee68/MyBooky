@@ -14,5 +14,11 @@ namespace MyBooky.Models.ViewModels
         [ValidateNever] 
         public IEnumerable<SelectListItem> CategoryList { get; set; }
         public bool IdInDatabase { get; set; }
+
+        //public ProductVm() 
+        //{
+        //    CategoryList = new List<SelectListItem>();
+        //    //Product = new Product();
+        //}
     }
 }

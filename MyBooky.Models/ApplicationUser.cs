@@ -20,5 +20,11 @@ namespace MyBooky.Models
         public Company? Company { get; set; }
         [NotMapped]
         public string Role { get; set; }
+
+        public ApplicationUser() 
+        {
+            Name = string.Empty;
+            Role = string.Empty;
+        }
     }
 }

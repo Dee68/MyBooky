@@ -26,5 +26,11 @@ namespace MyBooky.Models
         public int Count { get; set; }
         public double Price { get; set; }
 
+        public OrderDetail()
+        {
+            OrderHead = new OrderHead(); // Initialize OrderHead
+            //Product = new Product(); // Initialize Product
+        }
+
     }
 }

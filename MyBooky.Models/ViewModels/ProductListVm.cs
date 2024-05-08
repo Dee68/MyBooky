@@ -13,5 +13,11 @@ namespace MyBooky.Models.ViewModels
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
         public string Query { get; set; } // Add a property to hold the search query
+
+        public ProductListVm() 
+        {
+           // Products = new List<Product>();
+            Query = string.Empty;
+        }
     }
 }

@@ -10,8 +10,8 @@ namespace MyBooky.Utilities
 {
     public class EmailSender : IEmailSender
     {
-        public string MailgunApiKey { get; set; }
-        public string MailgunDomain { get; set; }
+        public string? MailgunApiKey { get; set; }
+        public string? MailgunDomain { get; set; }
 
         public EmailSender(IConfiguration _config)
         {
@@ -23,7 +23,10 @@ namespace MyBooky.Utilities
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-
+            if (MailgunApiKey == null || MailgunDomain == null)
+            {
+                throw new InvalidOperationException("Mailgun API key or domain is not configured.");
+            }
             RestClient client = new RestClient("https://api.mailgun.net/v3");
             RestRequest request = new RestRequest();
 

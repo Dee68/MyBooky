@@ -41,6 +41,16 @@ namespace MyBooky.Models
 		[Required]
 		public string PostalCode { get; set; }
 
+		public OrderHead()
+		{ 
+			ApplicationUser = new ApplicationUser();
+			ApplicationUserId = string.Empty;
+			Name = string.Empty;
+			StreetAddress = string.Empty;
+			City = string.Empty;
+			State = string.Empty;
+			PostalCode = string.Empty;
+		}
 
 	}
 }

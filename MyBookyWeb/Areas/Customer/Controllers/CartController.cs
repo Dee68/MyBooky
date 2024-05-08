@@ -28,7 +28,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         {
             //get the userId
             var claimsIdentity = User.Identity as ClaimsIdentity;
-            
+
             var userIdClaim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
             // Initialize the ShoppingCartVm object
             ShoppingCartVm = new ShoppingCartVm()
@@ -56,7 +56,8 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                         cart.Price = GetPriceBasedOnQuantity(cart);
                         ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
                     }
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     foreach (var cart in ShoppingCartVm.ShoppingCartList)
                     {
@@ -64,12 +65,12 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                         cart.Product.ProductImages = new List<ProductImage>();
                     }
                 }
-               
+
             }
-          
-           
-          
-                
+
+
+
+
             return View(ShoppingCartVm);
         }
         public IActionResult Plus(int cartId)
