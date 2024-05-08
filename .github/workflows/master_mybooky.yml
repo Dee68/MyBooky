@@ -16,7 +16,7 @@ env:
 
 jobs:
   build_test_project:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
 
 
   build_main_projects:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -75,7 +75,7 @@ jobs:
         run: dotnet publish --configuration Release --no-build --output ./myapp
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [build_test_project, build_main_projects]
     environment:
       name: 'Production'
