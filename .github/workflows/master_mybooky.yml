@@ -93,7 +93,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: main-app
-          path: ./myapp
+          path: ${{ env.MAIN_PROJECTS_DIR }}
 
       - name: Deploy test project to Azure Web App
         id: deploy-test-project-to-webapp
