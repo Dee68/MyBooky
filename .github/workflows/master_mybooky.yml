@@ -126,10 +126,10 @@ jobs:
         # Additional steps for logging
       - name: Display logs
         run: |
-            if [ -d "/home/runner/work/_temp" ]; then
-            echo "GitHub Actions Logs:"
-            cat /home/runner/work/_temp/*.log
-            else
-            echo "No log files found in /home/runner/work/_temp directory."
-            fi
+           if [ -d "/home/runner/work/_temp" ]; then
+             echo "GitHub Actions Logs:"
+             cat /home/runner/work/_temp/*.log
+           else
+             echo "No log files found in /home/runner/work/_temp directory."
+           fi
 
