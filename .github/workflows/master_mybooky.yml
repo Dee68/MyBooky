@@ -126,10 +126,10 @@ jobs:
         # Additional steps for logging
       - name: Display logs
         run: |
-         # echo "GitHub Actions Logs:"
-         # echo "Before deployment log:"
-         # cat before_deployment.log
+            if [ -d "/home/runner/work/_temp" ]; then
+            echo "GitHub Actions Logs:"
+            cat /home/runner/work/_temp/*.log
+            else
+            echo "No log files found in /home/runner/work/_temp directory."
+            fi
 
-         # echo "After deployment log:"
-         # cat after_deployment.log
-         cat /home/runner/work/_temp/*.log
