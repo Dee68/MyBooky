@@ -94,7 +94,7 @@ jobs:
       #     path: ${{ env.TEST_PROJECT_DIR }}
 
       - name: Download artifact from main projects build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: main-app
           #path: ${{ env.MAIN_PROJECTS_DIR }}
