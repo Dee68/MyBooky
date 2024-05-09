@@ -124,12 +124,12 @@ jobs:
       #   run: echo "Logging after deployment..." >> after_deployment.log
 
         # Additional steps for logging
-      - name: Display logs
-        run: |
-           if [ -d "/home/runner/work/_temp" ]; then
-             echo "GitHub Actions Logs:"
-             cat /home/runner/work/_temp/*.log
-           else
-             echo "No log files found in /home/runner/work/_temp directory."
-           fi
+      # - name: Display logs
+      #   run: |
+      #      if [ -d "/home/runner/work/_temp" ]; then
+      #        echo "GitHub Actions Logs:"
+      #        cat /home/runner/work/_temp/*.log
+      #      else
+      #        echo "No log files found in /home/runner/work/_temp directory."
+      #      fi
 
