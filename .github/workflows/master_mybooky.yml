@@ -79,8 +79,8 @@ jobs:
           path: ${{env.DOTNET_ROOT}}/myapp
 
         # Logging step before deploy job
-      - name: Log before deployment
-        run: echo "Logging before deployment..." >> before_deployment.log
+      # - name: Log before deployment
+      #   run: echo "Logging before deployment..." >> before_deployment.log
 
 
 
@@ -120,16 +120,16 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{env.MAIN_PROJECTS_DIR}}
       # Logging step after deploy job
-      - name: Log after deployment
-        run: echo "Logging after deployment..." >> after_deployment.log
+      # - name: Log after deployment
+      #   run: echo "Logging after deployment..." >> after_deployment.log
 
         # Additional steps for logging
       - name: Display logs
         run: |
-         echo "GitHub Actions Logs:"
-         echo "Before deployment log:"
-         cat before_deployment.log
+         # echo "GitHub Actions Logs:"
+         # echo "Before deployment log:"
+         # cat before_deployment.log
 
-         echo "After deployment log:"
-         cat after_deployment.log
+         # echo "After deployment log:"
+         # cat after_deployment.log
          cat /home/runner/work/_temp/*.log
