@@ -29,7 +29,6 @@ namespace MyBooky.Models
         public OrderDetail()
         {
             OrderHead = new OrderHead(); // Initialize OrderHead
-            //Product = new Product(); // Initialize Product
         }
 
     }

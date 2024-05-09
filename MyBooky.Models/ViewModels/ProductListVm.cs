@@ -16,7 +16,6 @@ namespace MyBooky.Models.ViewModels
 
         public ProductListVm() 
         {
-           // Products = new List<Product>();
             Query = string.Empty;
         }
     }

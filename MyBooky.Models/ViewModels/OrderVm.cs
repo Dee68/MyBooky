@@ -11,11 +11,5 @@ namespace MyBooky.Models.ViewModels
         public OrderHead OrderHead { get; set; }
         public IEnumerable<OrderDetail> OrderDetail { get; set; }
 
-        //public OrderVm()
-        //{
-        //    OrderDetail = new List<OrderDetail>();
-        //    OrderHead = new OrderHead();
-        //}
-
     }
 }

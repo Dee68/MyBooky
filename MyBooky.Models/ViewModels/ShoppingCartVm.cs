@@ -10,11 +10,5 @@ namespace MyBooky.Models.ViewModels
     {
         public IEnumerable<ShoppingCart> ShoppingCartList { get; set; }
         public OrderHead OrderHead { get; set; }
-
-        //public ShoppingCartVm()
-        //{
-        //    this.OrderHead = new OrderHead();
-        //    ShoppingCartList = new List<ShoppingCart>();
-        //}
     }
 }
