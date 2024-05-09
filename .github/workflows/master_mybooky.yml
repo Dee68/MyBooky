@@ -65,14 +65,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Restore main projects
-        run: dotnet restore ${{ env.MAIN_PROJECTS_DIR }}
 
       - name: Build main projects
-        run: dotnet build --no-restore -c Release ${{ env.MAIN_PROJECTS_DIR }}
+        run: dotnet build --configuration Release
 
       - name: Publish main projects
-        run: dotnet publish -c Release -o ${{ env.MAIN_PROJECTS_DIR }}
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: main-app
+          path: ${{env.DOTNET_ROOT}}/myapp
 
 
   deploy:
@@ -93,7 +97,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: main-app
-          path: ${{ env.MAIN_PROJECTS_DIR }}
+          #path: ${{ env.MAIN_PROJECTS_DIR }}
 
       # - name: Deploy test project to Azure Web App
       #   id: deploy-test-project-to-webapp
@@ -109,4 +113,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./myapp
+          package: ${{env.MAIN_PROJECTS_DIR}}
