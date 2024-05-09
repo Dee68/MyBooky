@@ -11,7 +11,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: mybooky
   TEST_PROJECT_DIR: 'MyBookyWebUnitTest'
-  MAIN_PROJECTS_DIR: 'MyBookyWeb'
+  MAIN_PROJECTS_DIR: '.'
   NETCORE_VERSION: '8.x'
 
 jobs:
