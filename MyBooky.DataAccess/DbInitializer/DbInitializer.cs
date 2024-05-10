@@ -96,7 +96,7 @@ namespace MyBooky.DataAccess.DbInitializer
         }
         private string GenerateTemporaryPassword()
         {
-            return "Temp@1432"; // Change this to use your actual password generation logic
+            return "Temp@1432"; // Change this later to use your actual password
         }
     } 
 }

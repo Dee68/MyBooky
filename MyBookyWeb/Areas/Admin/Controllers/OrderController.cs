@@ -27,7 +27,9 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            return View("Index");
+            IEnumerable<OrderHead> orderHeads = _unitofWork.OrderHead.GetAll(includeProperties: "ApplicationUser");
+
+            return View(orderHeads.ToList());
         }
         public IActionResult Details(int orderId)
         {
@@ -246,6 +248,36 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
 
 
+        [HttpDelete]
+        public IActionResult Delete(int orderId)
+        {
+            // Get all order details associated with the given orderId
+            var orderDetails = _unitofWork.OrderDetail.GetAll(od => od.OrderHeadId == orderId);
+
+            if (orderDetails == null || !orderDetails.Any())
+            {
+                return Json(new { success = false, message = "Order details not found" });
+            }
+
+            // Remove all order details
+            _unitofWork.OrderDetail.RemoveRange(orderDetails);
+            _unitofWork.Save();
+
+            // Now delete the order head itself
+            var orderHead = _unitofWork.OrderHead.Get(o => o.Id == orderId);
+            if (orderHead == null)
+            {
+                return Json(new { success = false, message = "Order not found" });
+            }
+
+            _unitofWork.OrderHead.Remove(orderHead);
+            _unitofWork.Save();
+
+            return Json(new { success = true, message = "Order and associated details deleted successfully" });
+        }
+
+
+
         #endregion
-}
+    }
 }
