@@ -38,20 +38,7 @@
 
                                 </div>
                             </div>
-                           @*  <div class="row my-1">
-                                <div class="col-3">Phone</div>
-                                <div class="col-9">
-                                    @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
-                                    {
-                                        <input asp-for="OrderHeader.PhoneNumber" type="text" class="form-control" />
-                                        <span asp-validation-for="OrderHeader.PhoneNumber" class="text-danger"></span>
-                                    }
-                                    else
-                                    {
-                                        <input asp-for="OrderHeader.PhoneNumber" readonly type="text" class="form-control" />
-                                    }
-                                </div>
-                            </div> *@
+                          
                             <div class="row my-1">
                                 <div class="col-3">Address</div>
                                 <div class="col-9">
@@ -111,7 +98,7 @@
                             <div class="row my-1">
                                 <div class="col-3">Email</div>
                                 <div class="col-9">
-                                    <input asp-for="OrderHead.ApplicationUser.Email" readonly type="text" class="form-control" />
+                                    <input asp-for="@Model.OrderHead.ApplicationUser.Email" readonly type="text" class="form-control" />
                                 </div>
                             </div>
                             <div class="row my-1">

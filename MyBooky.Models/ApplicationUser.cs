@@ -21,10 +21,10 @@ namespace MyBooky.Models
         [NotMapped]
         public string Role { get; set; }
 
-        public ApplicationUser() 
-        {
-            Name = string.Empty;
-            Role = string.Empty;
-        }
+        //public ApplicationUser() 
+        //{
+        //    Name = string.Empty;
+        //    Role = string.Empty;
+        //}
     }
 }
