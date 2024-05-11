@@ -19,7 +19,7 @@ namespace MyBooky.DataAccess.Repository
             _db = db;
             //changes _db.Categories = dbSet
             this.dbSet = _db.Set<T>();
-            //_db.Products.Include(u => u.Category).Include(u => u.CategoryId);
+            _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
         }
         public T GetById(int id)
         {

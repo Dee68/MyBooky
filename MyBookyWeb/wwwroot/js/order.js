@@ -41,16 +41,15 @@ function loadDataTable(status) {
         "columns": [
             { data: 'id', "width": "5%" },
             { data: 'name', "width": "25%" },
-            /*{ data: 'phoneNumber', "width": "20%" },*/
             { data: 'applicationUser.email', "width": "20%" },
             { data: 'orderStatus', "width": "20%" },
             { data: 'orderTotal', "width": "10%" },
             {
                 data: 'id',
                 "render": function (data) {
-                    return `<div class="w-75 btn-group" role="group">
-                     <a href="/admin/order/details?orderId=${data}" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i></a>               
-                     <a onClick=Delete("/admin/order/delete?orderId=${data}") class=btn btn-danger mx-2> <i class="bi bi-trash-fill"></i> Delete</a>
+                    return `<div class="w-100 btn-group" role="group">
+                     <a href="/admin/order/details?orderId=${data}" class="btn btn-primary mx-2"> <i class="bi bi-pencil-square"></i> Edit</a>               
+                     <a onClick=Delete("/admin/order/delete?orderId=${data}") class="btn btn-danger mx-2"> <i class="bi bi-trash-fill"></i> Delete</a>
                     </div>`
                 },
                 "width": "25%"
@@ -73,7 +72,6 @@ function Delete(url) {
             $.ajax({
                 url: url,
                 type: 'DELETE',
-                cache: false, // line to disable caching
                 success: function (data) {
                     dataTable.ajax.reload();
                     if (data.success) {
@@ -86,3 +84,4 @@ function Delete(url) {
         }
     });
 }
+

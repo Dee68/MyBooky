@@ -35,12 +35,5 @@ namespace MyBooky.Models
         [ValidateNever]
         public List<ProductImage>? ProductImages { get; set; }
 
-        public Product()
-        {
-            Title = string.Empty;
-            Description = string.Empty;
-            ISBN = string.Empty;
-            Author = string.Empty;
-        }
     }
 }

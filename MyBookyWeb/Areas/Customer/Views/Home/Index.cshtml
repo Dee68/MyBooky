@@ -10,8 +10,10 @@
 </form>
  @if(Model.Products.Any())
  {
+    
+
 <div class="row pb-3 album py-5 bg-body-tertiary mb-5">
-    @foreach (var item in Model.Products)
+    @foreach (var item in Model.Products.OrderBy(u =>u.CategoryId))
     {
         <div class="col-lg-3 col-sm-6">
             <div class="row p-2">

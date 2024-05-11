@@ -27,9 +27,17 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
+            if (_unitofWork == null || _unitofWork.OrderHead == null)
+            {
+                // Handle null reference gracefully
+                return View("Index");
+                //return NotFound(); 
+            }
             IEnumerable<OrderHead> orderHeads = _unitofWork.OrderHead.GetAll(includeProperties: "ApplicationUser");
+           
 
-            return View(orderHeads.ToList());
+
+            return View("index",orderHeads);
         }
         public IActionResult Details(int orderId)
         {
