@@ -82,7 +82,7 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: [build_main_projects,build_test_projec]
+    needs: [build_main_projects,build_test_project]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
