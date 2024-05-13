@@ -100,5 +100,25 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             TempData["success"] = "Category successfully deleted";
             return RedirectToAction("Index");
         }
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll() 
+        { 
+            List<Category> categoryList = _unitofWork.Category.GetAll().ToList();
+            return Json(new {data = categoryList});
+        }
+        [HttpDelete]
+        public IActionResult Delete(int id) 
+        {
+            var categoryToBeDeleted = _unitofWork.Category.Get(u => u.Id == id);
+            if (categoryToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+            _unitofWork.Category.Remove(categoryToBeDeleted);
+            _unitofWork.Save();
+            return Json(new { success = true, message = "Category Deleted successfully." });
+        }
+        #endregion
     }
 }

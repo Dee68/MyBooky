@@ -22,16 +22,16 @@
         </div>
         <div class="row pt-4">
 
-            <table class="table table-bordered table-striped border-primary text-center">
+            <table class="table table-bordered table-striped border-primary text-center" id="tblCat">
                 <thead class="table-primary">
                     <tr>
                         <th>Name</th>
                         <th>Display Order</th>
-                        <th>Actions</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    @foreach (var cat in Model.OrderBy(u => u.DisplayOrder))
+                    @foreach (var cat in Model.OrderBy(u => u.Id))
                     {
                         <tr>
                             <td>@cat.Name</td>
@@ -54,3 +54,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/category.js"></script>
+}
