@@ -17,7 +17,6 @@ builder.Services.AddControllersWithViews();
 //Connects to database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
-//.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole())));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -35,7 +34,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequiredLength = 8;
    
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-//.AddTokenProvider<DataProtectorTokenProvider<IdentityUser>>(TokenOptions.DefaultProvider);
+
 
 // Register IUserEmailStore<IdentityUser> service
 builder.Services.AddScoped<IUserEmailStore<IdentityUser>, UserStore<IdentityUser, IdentityRole, ApplicationDbContext, string>>();

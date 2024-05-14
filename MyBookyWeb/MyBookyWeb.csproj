@@ -37,4 +37,16 @@
 		<Folder Include="wwwroot\images\Product\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />
+	</ItemGroup>
+
 </Project>
