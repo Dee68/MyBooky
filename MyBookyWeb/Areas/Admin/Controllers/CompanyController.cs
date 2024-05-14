@@ -86,7 +86,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             _unitofWork.Company.Remove(CompanyToBeDeleted);
             _unitofWork.Save();
 
-            return Json(new { success = true, message = "Delete Successful" });
+            return Json(new { success = true, message = "Company Deleted Successful" });
         }
 
         #endregion
