@@ -48,27 +48,37 @@ jobs:
       - name: Publish test project
         run: dotnet publish --configuration Release --no-build --output ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
 
-  # codeql-analysis:
-  #   name: CodeQL Analysis
-  #   runs-on: ubuntu-latest
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp', 'javascript' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift' ]
+        # Use only 'java' to analyze code written in Java, Kotlin or both
+        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
-  #     # Initialize CodeQL and perform analysis
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v3
-  #       with:
-  #         languages: "csharp"
-  #         build-mode: "none"
-  #       env:
-  #           CODEQL_ACTION_VERSION: latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v3
-  #       with:
-  #         category: "/frameworks/aspnet"
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+
+    - name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+
   # cleanup:
   #   name: Cleanup CodeQL Database
   #   runs-on: ubuntu-latest
@@ -80,7 +90,7 @@ jobs:
 
   build_main_projects:
     runs-on: ubuntu-latest
-    needs: [build_test_project]
+    needs: [build_test_project, codeql_analysis]
     steps:
       - uses: actions/checkout@v4
 
