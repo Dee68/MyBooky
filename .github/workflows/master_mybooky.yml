@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
+
   workflow_dispatch:
 
 env:
@@ -43,6 +47,27 @@ jobs:
 
       - name: Publish test project
         run: dotnet publish --configuration Release --no-build --output ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
+
+  codeql-analysis:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Initialize CodeQL and perform analysis
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: "csharp"
+          build-mode: "build"
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/frameworks/aspnet"
 
 
   build_main_projects:
@@ -99,7 +124,7 @@ jobs:
 
   deploy:
     runs-on: windows-latest
-    needs: [build_main_projects,build_test_project]
+    needs: [build_main_projects,build_test_project,codeql-analysis]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
