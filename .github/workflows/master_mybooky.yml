@@ -58,10 +58,12 @@ jobs:
 
       # Initialize CodeQL and perform analysis
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: "csharp"
           build-mode: "none"
+        env:
+            CODEQL_ACTION_VERSION: latest
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
