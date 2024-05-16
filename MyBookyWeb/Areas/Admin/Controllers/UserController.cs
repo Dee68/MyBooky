@@ -140,6 +140,21 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             return Json(new { success = true, message = "Operation Successful" });
         }
 
+        [HttpPost]
+        public IActionResult Delete(string userId)
+        {
+            var user = _unitofWork.ApplicationUser.Get(u => u.Id == userId);
+            if (user == null)
+            {
+                return Json(new { success = false, message = "User not found" });
+            }
+            _unitofWork.ApplicationUser.Remove(user);
+            _unitofWork.Save();
+
+            return Json(new { success = true, message = "User deleted successfully" });
+        }
+
+
         #endregion
     }
 }

@@ -17,11 +17,10 @@ function loadDataTable() {
         },
         "ajax": { url: '/Admin/User/Getall' },
         "columns": [
-            { "data": "name", "width": "20%" },
-            { "data": "email", "width": "20%" },
-           /* { "data": "phoneNumber", "width": "15%" },*/
-            { "data": "company.name", "width": "15%" },
-            { "data": "role", "width": "15%" },
+            { "data": "name", "width": "15%" },
+            { "data": "email", "width": "15%" },
+            { "data": "company.name", "width": "10%" },
+            { "data": "role", "width": "10%" },
             {
                 data: { id: "id", lockoutEnd: "lockoutEnd" },
                 "render": function (data) {
@@ -37,6 +36,9 @@ function loadDataTable() {
                                 <a href="/Admin/User/RoleManagement?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;">
                                      <i class="bi bi-pencil-square"></i> Permission
                                 </a>
+                                <button onclick="deleteUser('${data.id}')" class="btn btn-outline-danger mx-2" style="width:150px;">
+                                 <i class="bi bi-trash-fill"></i> Delete
+                             </button>
                         </div>
                     `
                     }
@@ -49,13 +51,16 @@ function loadDataTable() {
                                 <a href="/Admin/User/RoleManagement?userId=${data.id}" class="btn btn-danger text-white" style="cursor:pointer; width:150px;">
                                      <i class="bi bi-pencil-square"></i> Permission
                                 </a>
+                                 <button onclick="deleteUser('${data.id}')" class="btn btn-outline-danger mx-2" style="width:150px;">
+                                 <i class="bi bi-trash-fill"></i> Delete
+                             </button>
                         </div>
                     `
                     }
 
 
                 },
-                "width": "30%"
+                "width": "50%"
             }
         ]
     });
@@ -73,6 +78,29 @@ function LockUnlock(id) {
                 toastr.success(data.message);
                 dataTable.ajax.reload();
             }
+        }
+    });
+}
+
+function deleteUser(userId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/Admin/User/Delete?userId=${userId}`, // Update URL to match the user controller route
+                type: 'POST', // Change type to POST since DELETE method is not allowed in standard HTML forms
+                success: function (data) {
+                    dataTable.ajax.reload();
+                    toastr.success(data.message);
+                }
+            })
         }
     });
 }
