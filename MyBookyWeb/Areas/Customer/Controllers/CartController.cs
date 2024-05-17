@@ -16,9 +16,9 @@ namespace MyBookyWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitofWork _unitofWork;
-		private readonly IEmailSender _emailSender;
-		[BindProperty]
-		public ShoppingCartVm ShoppingCartVm { get; set; }
+        private readonly IEmailSender _emailSender;
+        [BindProperty]
+        public ShoppingCartVm ShoppingCartVm { get; set; }
         public CartController(IUnitofWork unitofWork, IEmailSender emailSender)
         {
             _unitofWork = unitofWork;
@@ -106,18 +106,18 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         public IActionResult Remove(int cartId)
         {
             var cartFromDb = _unitofWork.ShoppingCart.Get(u => u.Id == cartId);
-            if(cartFromDb != null)
+            if (cartFromDb != null)
             {
                 _unitofWork.ShoppingCart.Remove(cartFromDb);
                 if (HttpContext != null && HttpContext.Session != null)
                 {
                     var cartCount = _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).Count();
-                    HttpContext.Session.SetInt32(SD.SessionCart, cartCount-1);
+                    HttpContext.Session.SetInt32(SD.SessionCart, cartCount - 1);
                 }
                 _unitofWork.Save();
             }
 
-            
+
             return RedirectToAction(nameof(Index));
         }
         public IActionResult Summary()
@@ -140,9 +140,9 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             };
 
             ShoppingCartVm.ShoppingCartList = _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId, includeProperties: "Product");
-            
+
             if (!ShoppingCartVm.ShoppingCartList.Any())
-           {
+            {
                 TempData["error"] = "Your cart is empty you can not proceed";
                 return RedirectToAction(nameof(Index));
 
@@ -162,7 +162,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                     cart.Price = GetPriceBasedOnQuantity(cart);
                     ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -176,10 +176,10 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         }
         [HttpPost]
         [ActionName("Summary")]
-		public IActionResult SummaryPost()
-		{
-			//get the userId
-			var claimsIdentity = User.Identity as ClaimsIdentity;
+        public IActionResult SummaryPost()
+        {
+            //get the userId
+            var claimsIdentity = User.Identity as ClaimsIdentity;
 
             var userIdClaim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -271,9 +271,9 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                     _unitofWork.Save();
                     Response.Headers.Append("Location", session.Url);
                     return new StatusCodeResult(303);
-                    
+
                 }
-           
+
                 return RedirectToAction(nameof(OrderConfirmation), new { id = ShoppingCartVm.OrderHead.Id });
             }
             else
@@ -282,10 +282,10 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 // Output the error to the console
                 Console.WriteLine($"An error occurred:");
                 return RedirectToAction("Index", "Home");
-                
+
             }
 
-   
+
 
         }
 
@@ -307,8 +307,24 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 HttpContext.Session.Clear();
 
             }
-            _emailSender.SendEmailAsync(orderHead.ApplicationUser.Email, "New Order - MyBooky",
-                $"<p>New Order Created - {orderHead.Id}</p>");
+
+            var orderDetails = _unitofWork.OrderDetail.GetAll(u => u.OrderHeadId == id, includeProperties: "Product").ToList();
+
+            //Build order detail string
+            string orderDetailString = "<ul>";
+            foreach (var item in orderDetails)
+            {
+                orderDetailString += $"<li>Product: {item.Product.Title}, Quantity: {item.Count}, Price: {item.Price:C}</li>";
+            }
+            orderDetailString += "</ul>";
+
+            string emailBody = $@"
+                <p>New Order Created - {orderHead.Id}</p>
+                <p>Order Details:</p>
+                {orderDetailString}
+            ";
+
+            _emailSender.SendEmailAsync(orderHead.ApplicationUser.Email, "New Order - MyBooky",emailBody);
 
             List<ShoppingCart> shoppingCarts = _unitofWork.ShoppingCart
                 .GetAll(u => u.ApplicationUserId == orderHead.ApplicationUserId).ToList();
@@ -318,7 +334,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
             return View(id);
         }
-		private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Count <= 50)
             {
