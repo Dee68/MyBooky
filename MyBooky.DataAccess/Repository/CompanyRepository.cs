@@ -19,7 +19,7 @@ namespace MyBooky.DataAccess.Repository
         }
         public void Update(Company company)
         {
-            throw new NotImplementedException();
+            _db.Companies.Update(company);
         }
     }
 }
