@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -30,6 +30,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MyBooky.DataAccess\MyBooky.DataAccess.csproj" />
+		<ProjectReference Include="..\MyBooky.Models\MyBooky.Models.csproj" />
 		<ProjectReference Include="..\MyBooky.Utilities\MyBooky.Utilities.csproj" />
 	</ItemGroup>
 

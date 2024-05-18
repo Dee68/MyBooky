@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Utilities;
-using MyBookyWeb.DataAccess.Data;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
@@ -45,11 +43,11 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            if (id == null || id == 0)
+            if (id== null || id == 0)
             {
                 return NotFound();
             }
-            Category? categoryFromDb = _unitofWork.Category.GetById(id.Value);
+            Category? categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound();

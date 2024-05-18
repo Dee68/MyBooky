@@ -81,7 +81,16 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+// Run the application based on environment
+if (app.Environment.IsDevelopment())
+{
+    app.Run();
+}
+else
+{
+    app.Run("http://0.0.0.0:80");
+}
+
 void SeedDatabase()
 {
     using (var scope = app.Services.CreateScope())

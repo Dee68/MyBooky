@@ -22,11 +22,11 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             _unitofWork = unitofWork;
         }
 
-        public IActionResult Index()
-        {
-            IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
-            return View(products);
-        }
+        //public IActionResult Index()
+        //{
+        //    IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
+        //    return View(products);
+        //}
         [HttpGet]
         public IActionResult Index(string? query, int page = 1, int pageSize=4)
         {

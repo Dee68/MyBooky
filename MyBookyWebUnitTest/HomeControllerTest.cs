@@ -15,50 +15,50 @@ namespace MyBookyWebUnitTest
     //Integration test for home controller
     public class HomeControllerTest
     {
-        [Fact]
-        public void Index_ReturnsViewWithProducts()
-        {
-            // Arrange
-            var mockLogger = new Mock<ILogger<HomeController>>();
-            var mockUnitOfWork = new Mock<IUnitofWork>();
-            var products = new List<Product>
-            {
-                new Product { 
-                    Id = 1, 
-                    Title = "Book 1", 
-                    CategoryId = 1,
-                    Category = new Category { Id = 1, Name = "TestCategory", DisplayOrder = 1 },
-                    Description = "Book one", 
-                    ISBN = "1212121212", 
-                    ProductImages = new List<ProductImage>(), 
-                    Price = 20.0, ListPrice = 20.0, 
-                    Price50 = 18.0, 
-                    Price100 = 15.0, 
-                    Author = "John Doe" },
-                new Product { 
-                    Id = 2, 
-                    Title = "Book 2", 
-                    CategoryId = 2, 
-                    Category = new Category { Id = 2, Name = "TestCategory1", DisplayOrder= 2 },
-                    Description = "Book two",
-                    ISBN = "1313121219",
-                    ProductImages = new List<ProductImage>(),
-                    Price = 20.0, ListPrice = 20.0,
-                    Price50 = 18.0,
-                    Price100 = 15.0,
-                    Author = "Jane Doe"}
-            };
-            mockUnitOfWork.Setup(uow => uow.Product.GetAll(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>())).Returns(products);
-            var controller = new HomeController(mockLogger.Object, mockUnitOfWork.Object);
-            //Act
-            var result = controller.Index() as ViewResult;
+        //[Fact]
+        //public void Index_ReturnsViewWithProducts()
+        //{
+        //    // Arrange
+        //    var mockLogger = new Mock<ILogger<HomeController>>();
+        //    var mockUnitOfWork = new Mock<IUnitofWork>();
+        //    var products = new List<Product>
+        //    {
+        //        new Product { 
+        //            Id = 1, 
+        //            Title = "Book 1", 
+        //            CategoryId = 1,
+        //            Category = new Category { Id = 1, Name = "TestCategory", DisplayOrder = 1 },
+        //            Description = "Book one", 
+        //            ISBN = "1212121212", 
+        //            ProductImages = new List<ProductImage>(), 
+        //            Price = 20.0, ListPrice = 20.0, 
+        //            Price50 = 18.0, 
+        //            Price100 = 15.0, 
+        //            Author = "John Doe" },
+        //        new Product { 
+        //            Id = 2, 
+        //            Title = "Book 2", 
+        //            CategoryId = 2, 
+        //            Category = new Category { Id = 2, Name = "TestCategory1", DisplayOrder= 2 },
+        //            Description = "Book two",
+        //            ISBN = "1313121219",
+        //            ProductImages = new List<ProductImage>(),
+        //            Price = 20.0, ListPrice = 20.0,
+        //            Price50 = 18.0,
+        //            Price100 = 15.0,
+        //            Author = "Jane Doe"}
+        //    };
+        //    mockUnitOfWork.Setup(uow => uow.Product.GetAll(It.IsAny<Expression<Func<Product, bool>>>(), It.IsAny<string>())).Returns(products);
+        //    var controller = new HomeController(mockLogger.Object, mockUnitOfWork.Object);
+        //    //Act
+        //    var result = controller.Index() as ViewResult;
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as IEnumerable<Product>;
-            Assert.NotNull(model);
-            Assert.Equal(2, model.Count());
-        }
+        //    // Assert
+        //    Assert.NotNull(result);
+        //    var model = result.Model as IEnumerable<Product>;
+        //    Assert.NotNull(model);
+        //    Assert.Equal(2, model.Count());
+        //}
         [Fact]
         public void Details_ReturnsViewWithProduct()
         {
