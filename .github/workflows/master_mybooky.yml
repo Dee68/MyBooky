@@ -19,18 +19,21 @@ env:
   NETCORE_VERSION: '8.x'
 
 jobs:
-  build_test_project:
+  dev:
     runs-on: ubuntu-latest
-
+    environment: development
     steps:
+      # Checkout repository
       - uses: actions/checkout@v4
 
+      # Set up .NET Core
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
+      # Cache dependencies for test project
       - name: Cache dependencies for test project
         uses: actions/cache@v2
         with:
@@ -39,60 +42,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      # Restore test project
       - name: Restore test project
         run: dotnet restore ${{ env.TEST_PROJECT_DIR }}
 
+      # Build test project
       - name: Build test project
         run: dotnet build --no-restore -c Release ${{ env.TEST_PROJECT_DIR }}
 
+      # Publish test project
       - name: Publish test project
         run: dotnet publish --configuration Release --no-build --output ${{ env.TEST_PROJECT_DIR }}/bin/Release/net8.0
 
-  codeql-analysis:
-    name: CodeQL Analysis
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'csharp', 'javascript' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby', 'swift' ]
-        # Use only 'java' to analyze code written in Java, Kotlin or both
-        # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
-
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
-      with:
-        languages: ${{ matrix.language }}
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
-
-
-
-  build_main_projects:
-    runs-on: ubuntu-latest
-    needs: [build_test_project,codeql-analysis]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
+      # Initialize CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
         with:
-          dotnet-version: ${{ env.NETCORE_VERSION }}
-          include-prerelease: true
+          languages: 'csharp,javascript'
 
+      # Autobuild for CodeQL
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+
+      # Cache dependencies for main projects
       - name: Cache dependencies for main projects
         uses: actions/cache@v2
         with:
@@ -101,30 +73,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-
+      # Build main projects
       - name: Build main projects
         run: dotnet build --configuration Release
 
+      # Publish main projects
       - name: Publish main projects
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
 
+      # Upload artifact for deployment job
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: main-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ env.DOTNET_ROOT }}/myapp
 
-  deploy_dev:
-    runs-on: ubuntu-latest
-    needs: [build_main_projects]
-    environment: 'Development'
-    steps:
-      - name: Development Environment
+      # Echo Development Environment
+      - name: Echo Development Environment
         run: echo "I am in the Development environment"   
 
-  deploy_staging:
+  staging:
     runs-on: windows-latest
-    needs: [deploy_dev]
+    needs: [dev]
     environment: 'Staging'
     steps:
       - name: Echo Staging Environment
@@ -133,9 +103,9 @@ jobs:
 
   
 
-  deploy:
+  production:
     runs-on: windows-latest
-    needs: [deploy_staging]
+    needs: [staging]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
