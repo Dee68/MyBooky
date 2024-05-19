@@ -37,12 +37,12 @@ namespace MyBooky.DataAccess.DbInitializer
                 // Create admin user if it does not exist
                 CreateAdminUser();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 // Log the exception or handle it in a meaningful way
                 Console.WriteLine($"An error occurred during database initialization: {ex.Message}");
             }
-           
+
 
 
         }
@@ -98,6 +98,6 @@ namespace MyBooky.DataAccess.DbInitializer
         {
             return "Temp@1432"; // Change this later to use your actual password
         }
-    } 
+    }
 }
 

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MyBooky.DataAccess.Repository
 {
-    public class ShoppingCartRepository : Repository<ShoppingCart>,IShoppingCartRepository
+    public class ShoppingCartRepository : Repository<ShoppingCart>, IShoppingCartRepository
     {
         private readonly ApplicationDbContext _db;
         public ShoppingCartRepository(ApplicationDbContext db) : base(db)
@@ -18,7 +18,7 @@ namespace MyBooky.DataAccess.Repository
             _db = db;
         }
 
-        
+
 
         public void Update(ShoppingCart shoppingCart)
         {

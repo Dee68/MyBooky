@@ -13,7 +13,7 @@ namespace MyBooky.Models.ViewModels
         public IEnumerable<SelectListItem> RoleList { get; set; }
         public IEnumerable<SelectListItem> CompanyList { get; set; }
 
-        public RoleManagementVM() 
+        public RoleManagementVM()
         {
             RoleList = new List<SelectListItem>();
             CompanyList = new List<SelectListItem>();

@@ -34,7 +34,7 @@ namespace MyBookyWebUnitTest
                 Price50 = 27.0,
                 Price100 = 25.0,
                 Author = "Jon Doe",
-                Description= "Description1",
+                Description = "Description1",
                 ProductImages = new List<ProductImage> { }
             };
             var p2 = new Product
@@ -63,7 +63,7 @@ namespace MyBookyWebUnitTest
                 Description = "Description1",
                 ProductImages = new List<ProductImage> { }
             };
-            var productList = new List<Product> { p1,p2,p3};
+            var productList = new List<Product> { p1, p2, p3 };
 
             var _unitofwork = new Mock<IUnitofWork>();
             var webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
@@ -92,7 +92,7 @@ namespace MyBookyWebUnitTest
                  new Category { Id = 1, Name = "Category1" },
                  new Category { Id = 2, Name = "Category2" }
             };
-            
+
             _unitofwork.Setup(u => u.Category.GetAll()).Returns(expectedCategoryList);
 
             var productCtrl = new ProductController(_unitofwork.Object, webHostEnvironmentMock.Object);
@@ -129,24 +129,6 @@ namespace MyBookyWebUnitTest
             Assert.NotNull(model.Product);
         }
 
-        //[Fact]
-        //public void Upsert_ReturnsViewResult_WhenIdIsNotNull()
-        //{
-
-        //}
-        //[Fact]
-        //public void Upsert_ReturnsRedirectToActionResult_WhenModelStateIsValid()
-        //{
-            
-
-
-        //}
-
-        //[Fact]
-        //public void Upsert_ReturnsViewResult_WhenModelStateIsInvalid()
-        //{
-            
-        //}
 
 
     }

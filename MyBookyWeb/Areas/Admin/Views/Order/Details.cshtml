@@ -38,7 +38,7 @@
 
                                 </div>
                             </div>
-                          
+
                             <div class="row my-1">
                                 <div class="col-3">Address</div>
                                 <div class="col-9">
@@ -263,8 +263,8 @@
 
     <partial name="_ValidationScriptsPartial" />
     <script>
-        function validateInput(){
-            if(document.getElementById("trackingNumber").value==""){
+        function validateInput() {
+            if (document.getElementById("trackingNumber").value == "") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -272,7 +272,7 @@
                 });
                 return false;
             }
-            if (document.getElementById("carrier").value =="") {
+            if (document.getElementById("carrier").value == "") {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',

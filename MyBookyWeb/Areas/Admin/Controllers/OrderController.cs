@@ -34,17 +34,17 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 //return NotFound(); 
             }
             IEnumerable<OrderHead> orderHeads = _unitofWork.OrderHead.GetAll(includeProperties: "ApplicationUser");
-           
 
 
-            return View("index",orderHeads);
+
+            return View("index", orderHeads);
         }
         public IActionResult Details(int orderId)
         {
             OrderVm orderVm = new OrderVm()
             {
-                OrderHead = _unitofWork.OrderHead.Get(u =>u.Id == orderId, includeProperties:"ApplicationUser"),
-                OrderDetail = _unitofWork.OrderDetail.GetAll(u =>u.OrderHeadId == orderId, includeProperties:"Product")
+                OrderHead = _unitofWork.OrderHead.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
+                OrderDetail = _unitofWork.OrderDetail.GetAll(u => u.OrderHeadId == orderId, includeProperties: "Product")
             };
             return View(orderVm);
         }
@@ -79,7 +79,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult StartProcessing()
         {
-            if(OrderVm.OrderHead == null || OrderVm.OrderHead == null) 
+            if (OrderVm.OrderHead == null || OrderVm.OrderHead == null)
             {
                 return Problem("Bad request", null, 404);
             }

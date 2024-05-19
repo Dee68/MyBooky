@@ -9,60 +9,60 @@
         <button class="btn btn-primary bg-primary" type="submit">Search </button>
     </div>
 </form>
- @if(Model.Products.Any())
- {
-    
+@if (Model.Products.Any())
+{
 
-<div class="row pb-3 album py-5 bg-body-tertiary mb-5">
-    @foreach (var item in Model.Products.OrderBy(u =>u.CategoryId))
-    {
-        <div class="col-lg-3 col-sm-6">
-            <div class="row p-2">
-                <div class="col-12 p-1">
-                    <div class="card border-0 shadow p-3 border-top border-5 rounded">
-                        @if (item.ProductImages != null && item.ProductImages.Count() > 0)
-                        {
-                            @* <img src="@item.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" /> *@
+
+    <div class="row pb-3 album py-5 bg-body-tertiary mb-5">
+        @foreach (var item in Model.Products.OrderBy(u => u.CategoryId))
+        {
+            <div class="col-lg-3 col-sm-6">
+                <div class="row p-2">
+                    <div class="col-12 p-1">
+                        <div class="card border-0 shadow p-3 border-top border-5 rounded">
+                            @if (item.ProductImages != null && item.ProductImages.Count() > 0)
+                            {
+                                @* <img src="@item.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" /> *@
                                 @* <img src="~/images/product@(@item.Id)/Path.GetFileName(@item.ProductImages.FirstOrDefault()?.ImageUrl)" class="card-img-top rounded" /> *@
-                              
+
                                 var imagePath = $"/images/product{item.Id}/{System.IO.Path.GetFileName(item.ProductImages.FirstOrDefault()?.ImageUrl)}";
-                                    
-                             
+
+
                                 <img src="@Html.Raw(imagePath)" class="card-img-top rounded" />
 
 
-                        }
-                        else
-                        {
-                            <img src="https://placehold.co/500x600/png" class="card-img-top rounded" />
-                        }
-                        <div class="card-body pb-0">
-                            <div class="pl-1 mb-0">
-                                <p class="h6 text-dark opacity-75 text-uppercase text-center">List Price: <span class="text-decoration-line-through">@item.ListPrice.ToString("c")</span></p>
+                            }
+                            else
+                            {
+                                <img src="https://placehold.co/500x600/png" class="card-img-top rounded" />
+                            }
+                            <div class="card-body pb-0">
+                                <div class="pl-1 mb-0">
+                                    <p class="h6 text-dark opacity-75 text-uppercase text-center">List Price: <span class="text-decoration-line-through">@item.ListPrice.ToString("c")</span></p>
+                                </div>
+                                <div class="pl-1">
+                                    <p class="h6 text-dark opacity-75 text-uppercase text-center">As Low As: <span>@item.Price100.ToString("c")</span></p>
+                                </div>
                             </div>
-                            <div class="pl-1">
-                                <p class="h6 text-dark opacity-75 text-uppercase text-center">As Low As: <span>@item.Price100.ToString("c")</span></p>
+                            <div>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
                             </div>
-                        </div>
-                        <div>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary bg-gradient border-0 form-control">Details</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
-<!-- Pagination controls -->
+        }
+    </div>
+    <!-- Pagination controls -->
     <nav aria-label="Page navigation" class="pagination-container mb-4">
         <ul class="pagination justify-content-center">
-        @for (int i = 1; i <= Model.TotalPages; i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" href="?page=@i&query=@ViewBag.Query">@i</a>
-            </li>
-        }
-    </ul>
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="?page=@i&query=@ViewBag.Query">@i</a>
+                </li>
+            }
+        </ul>
     </nav>
 }
 else

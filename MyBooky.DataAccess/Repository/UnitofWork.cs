@@ -30,13 +30,13 @@ namespace MyBooky.DataAccess.Repository
             Category = new CategoryRepository(_db);
             Product = new ProductRepository(_db);
             Company = new CompanyRepository(_db);
-            
+
         }
-        
+
 
         public void Save()
         {
-            
+
             _db.SaveChanges();
         }
     }

@@ -16,7 +16,7 @@ namespace MyBookyWebUnitTest
 {
     public class CategoryControllerUnitTest
     {
-        
+
         [Fact]
         public void Index()
         {
@@ -110,7 +110,7 @@ namespace MyBookyWebUnitTest
             var result = categoryCtrl.Edit(categoryId) as ViewResult;
 
             // Assert
-           
+
             if (result != null)
             {
                 // Check if the model is of the expected type
@@ -190,7 +190,7 @@ namespace MyBookyWebUnitTest
             // Mock TempData
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             categoryCtrl.TempData = tempData; // Set TempData in the controller
-            
+
             _unitofwork.Setup(u => u.Category.GetById(categoryId)).Returns(categoryFromDb);
 
             //Action

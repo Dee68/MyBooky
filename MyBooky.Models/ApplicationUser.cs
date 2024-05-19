@@ -21,5 +21,6 @@ namespace MyBooky.Models
         [NotMapped]
         public string Role { get; set; }
 
+
     }
 }

@@ -10,7 +10,7 @@ using MyBooky.Utilities;
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles =SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
     {
         private readonly IUnitofWork _unitofWork;
@@ -23,7 +23,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> products = _unitofWork.Product.GetAll(includeProperties:"Category").ToList();
+            List<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category").ToList();
             return View(products);
         }
         public IActionResult Upsert(int? id)
@@ -129,7 +129,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 
                     _unitofWork.Product.Update(productVm.Product);
                     _unitofWork.Save();
-                    
+
                 }
 
                 TempData["success"] = "Product created/updated successfully";

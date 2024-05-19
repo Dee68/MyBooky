@@ -12,9 +12,9 @@ namespace MyBooky.DataAccess.Repository
     public class ProductRepository : Repository<Product>, IProductRepository
     {
         private readonly ApplicationDbContext _db;
-        public ProductRepository(ApplicationDbContext db) : base(db) 
+        public ProductRepository(ApplicationDbContext db) : base(db)
         {
-            _db = db; 
+            _db = db;
         }
         public void Update(Product product)
         {
@@ -31,7 +31,7 @@ namespace MyBooky.DataAccess.Repository
                 productFromDb.Price50 = product.Price50;
                 productFromDb.Price100 = product.Price100;
                 productFromDb.ProductImages = product.ProductImages;
-                
+
             }
         }
     }

@@ -10,7 +10,7 @@ namespace MyBooky.DataAccess.Repository
         private readonly ApplicationDbContext _db;
         public ProductImageRepository(ApplicationDbContext db) : base(db)
         {
-            _db = db; 
+            _db = db;
         }
 
         public void Update(ProductImage productImage)

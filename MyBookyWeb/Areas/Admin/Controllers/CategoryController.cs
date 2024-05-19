@@ -43,7 +43,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Edit(int? id)
         {
-            if (id== null || id == 0)
+            if (id == null || id == 0)
             {
                 return NotFound();
             }
@@ -100,13 +100,13 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         #region API CALLS
         [HttpGet]
-        public IActionResult GetAll() 
-        { 
+        public IActionResult GetAll()
+        {
             List<Category> categoryList = _unitofWork.Category.GetAll().ToList();
-            return Json(new {data = categoryList});
+            return Json(new { data = categoryList });
         }
         [HttpDelete]
-        public IActionResult Delete(int id) 
+        public IActionResult Delete(int id)
         {
             var categoryToBeDeleted = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryToBeDeleted == null)

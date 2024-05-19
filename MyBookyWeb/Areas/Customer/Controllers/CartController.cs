@@ -324,7 +324,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 {orderDetailString}
             ";
 
-            _emailSender.SendEmailAsync(orderHead.ApplicationUser.Email, "New Order - MyBooky",emailBody);
+            _emailSender.SendEmailAsync(orderHead.ApplicationUser.Email, "New Order - MyBooky", emailBody);
 
             List<ShoppingCart> shoppingCarts = _unitofWork.ShoppingCart
                 .GetAll(u => u.ApplicationUserId == orderHead.ApplicationUserId).ToList();

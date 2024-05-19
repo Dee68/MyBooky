@@ -28,29 +28,29 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         //    return View(products);
         //}
         [HttpGet]
-        public IActionResult Index(string? query, int page = 1, int pageSize=4)
+        public IActionResult Index(string? query, int page = 1, int pageSize = 4)
         {
             var productsEnumerable = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
             IQueryable<Product> products = productsEnumerable.AsQueryable();
             if (products == null || !products.Any())
             {
-                return Problem("There are no books yet in the database",null,404);
+                return Problem("There are no books yet in the database", null, 404);
             }
             //Filter result based on search query
-            
+
             if (!String.IsNullOrEmpty(query))
             {
                 query = query.Trim().ToLower();
-                products = products.Where(q => q.Title!.ToLower().Contains(query) 
-                || q.Author!.ToLower().Contains(query) 
-                || q.ISBN!.Contains(query) 
+                products = products.Where(q => q.Title!.ToLower().Contains(query)
+                || q.Author!.ToLower().Contains(query)
+                || q.ISBN!.Contains(query)
                 || q.Category!.Name!.ToLower().Contains(query));
             }
             //paginate result
-            var paginatedProducts = products.Skip((page -1)*pageSize).Take(pageSize).ToList();
+            var paginatedProducts = products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             // Calculate total number of pages
             var totalProducts = products.Count();
-            var totalPages = (int)Math.Ceiling(totalProducts/(double)pageSize);
+            var totalPages = (int)Math.Ceiling(totalProducts / (double)pageSize);
             //pass paginated data to view model
             var viewModel = new ProductListVm
             {
@@ -61,19 +61,19 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 Query = query
             };
 
-            
+
             return View(viewModel);
         }
         public IActionResult Details(int id)
         {
             ShoppingCart cart = new ShoppingCart()
             {
-                Product = _unitofWork.Product.Get(u => u.Id==id,includeProperties: "Category,ProductImages"),
+                Product = _unitofWork.Product.Get(u => u.Id == id, includeProperties: "Category,ProductImages"),
                 ProductId = id,
                 Count = 1
-        };
-            
-            return View("Details",cart);
+            };
+
+            return View("Details", cart);
         }
         [HttpPost]
         [Authorize]
@@ -120,8 +120,8 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                     _unitofWork.ShoppingCart.GetAll(u => u.ApplicationUserId == userId).Count());
 
                 }
-                
-                
+
+
 
                 TempData["success"] = "Product successfully added to cart.";
             }

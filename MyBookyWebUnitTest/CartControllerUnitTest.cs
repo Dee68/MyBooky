@@ -37,7 +37,8 @@ namespace MyBookyWebUnitTest
                 {
                     Id = i,
                     ProductId = i,
-                    Product = new Product {
+                    Product = new Product
+                    {
                         /* Populate Product properties */
                         Id = i,
                         Title = "Book" + i,
@@ -52,8 +53,9 @@ namespace MyBookyWebUnitTest
                     },
                     Count = 1,
                     ApplicationUserId = "user123",
-                    ApplicationUser = new ApplicationUser { 
-                        /* Populate ApplicationUser properties */ 
+                    ApplicationUser = new ApplicationUser
+                    {
+                        /* Populate ApplicationUser properties */
                         Name = "John doe"
                     },
                     Price = 10.00 // Mock price
@@ -130,7 +132,7 @@ namespace MyBookyWebUnitTest
             // Assert
             Assert.NotNull(result);
             Assert.Equal("Index", result.ActionName);
-           Assert.Equal(2, cartFromDb.Count); // Check if count is incremented
+            Assert.Equal(2, cartFromDb.Count); // Check if count is incremented
             unitOfWorkMock.Verify(u => u.ShoppingCart.Update(cartFromDb), Times.Once); // Verify Update method is called
             unitOfWorkMock.Verify(u => u.Save(), Times.Once); // Verify Save method is called
         }
@@ -142,9 +144,9 @@ namespace MyBookyWebUnitTest
             var cartFromDb = new ShoppingCart { Id = cartId, Count = 3 };
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
-            unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, 
-                bool>>>(), 
-                It.IsAny<string>(), 
+            unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart,
+                bool>>>(),
+                It.IsAny<string>(),
                 false))
                 .Returns(cartFromDb);
             var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object);
@@ -152,7 +154,7 @@ namespace MyBookyWebUnitTest
             var result = controller.Minus(cartId) as RedirectToActionResult;
             //Assert
             Assert.NotNull(result);
-            Assert.Equal("Index",result.ActionName);
+            Assert.Equal("Index", result.ActionName);
             Assert.Equal(2, cartFromDb.Count); // Check if count is decreased
         }
         [Fact]
@@ -172,7 +174,7 @@ namespace MyBookyWebUnitTest
 
             //Action
             var result = controller.Remove(cartId);
-            
+
             //Assert
             Assert.NotNull(result);
         }
