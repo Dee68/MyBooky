@@ -73,6 +73,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      # Initialize Lint
+      - name: Checkout Git Repository
+        uses: actions/checkout@v3
+
+      # Set up
+      - name: Set up .Net
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+
+      # Run Linters
+      - name: Run Linters
+        uses: wearerequired/lint-action@v2
+        with:
+          dotnet_format: true
+  
       # Build main projects
       - name: Build main projects
         run: dotnet build --configuration Release
