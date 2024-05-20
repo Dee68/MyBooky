@@ -86,7 +86,7 @@ jobs:
         with:
           dotnet_format: true
 
-      # Check runs
+      # Check runs with annotations
       - name: Create check runs with commit annotations
         uses: actions/github-script@v4
         with:
