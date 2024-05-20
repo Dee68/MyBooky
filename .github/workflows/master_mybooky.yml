@@ -32,7 +32,7 @@ jobs:
 
       # Cache dependencies for test project
       - name: Cache dependencies for test project
-        uses: actions/cache@v2.2.2
+        uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -53,17 +53,17 @@ jobs:
 
       # Initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2.8.1
+        uses: github/codeql-action/init@v2
         with:
           languages: 'csharp,javascript'
 
       # Autobuild for CodeQL
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2.8.1
+        uses: github/codeql-action/autobuild@v2
 
       # Cache dependencies for main projects
       - name: Cache dependencies for main projects
-        uses: actions/cache@v2.2.2
+        uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
