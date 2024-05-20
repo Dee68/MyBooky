@@ -14,26 +14,24 @@ env:
   TEST_PROJECT_DIR: 'MyBookyWebUnitTest'
   MAIN_PROJECTS_DIR: '.'
   NETCORE_VERSION: '8.x'
+  NODE_VERSION: '20.x'
 
 jobs:
   dev:
     runs-on: ubuntu-latest
     environment: development
-    strategy:
-      matrix:
-        node-version: [20.x]
     steps:
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
 
       # Checkout repository
       - uses: actions/checkout@v4
 
       # Set up .NET Core
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1.7.0
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
@@ -80,23 +78,23 @@ jobs:
 
       # Initialize Lint
       - name: Checkout Git Repository
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3
 
       # Set up
       - name: Set up .NET
-        uses: actions/setup-dotnet@v1.7.0
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
       # Run Linters
       - name: Run Linters
-        uses: wearerequired/lint-action@v2.3.0
+        uses: wearerequired/lint-action@v2
         with:
           dotnet_format: true
 
       # Check runs with annotations
       - name: Create check runs with commit annotations
-        uses: actions/github-script@v4.0.0
+        uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
