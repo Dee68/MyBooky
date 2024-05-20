@@ -92,36 +92,6 @@ jobs:
         with:
           dotnet_format: true
 
-      # Check runs with annotations
-      - name: Create check runs with commit annotations
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{secrets.GH_TOKEN}}
-          script: |
-            const { getOctokit } = require('@actions/github');
-            const octokit = getOctokit('${{ secrets.GH_TOKEN }}');
-
-            // Fetch the commit SHA
-            const commitSHA = context.payload.after;
-
-            // Create check runs with annotations
-            const annotations = [
-              // Add your annotations here
-            ];
-
-            await octokit.rest.checks.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: 'Lint Check',
-              head_sha: commitSHA,
-              status: 'completed',
-              conclusion: 'success', // or 'failure' depending on your criteria
-              output: {
-                title: 'Lint Check Results',
-                summary: 'Linting completed with errors/warnings.',
-                annotations: annotations.slice(0, 50) // Limit to first 50 annotations
-              }
-            });
 
       # Build main projects
       - name: Build main projects
