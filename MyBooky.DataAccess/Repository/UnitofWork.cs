@@ -1,4 +1,4 @@
-﻿using MyBooky.DataAccess.Repository.IRepository;
+using MyBooky.DataAccess.Repository.IRepository;
 using MyBookyWeb.DataAccess.Data;
 using System;
 using System.Collections.Generic;

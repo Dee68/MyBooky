@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Utilities;

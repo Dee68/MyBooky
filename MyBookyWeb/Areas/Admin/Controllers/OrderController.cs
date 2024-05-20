@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using MyBooky.DataAccess.Repository.IRepository;
@@ -180,7 +180,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             Session session = service.Create(options);
             _unitofWork.OrderHead.UpdateStripePaymentID(OrderVm.OrderHead.Id, session.Id, session.PaymentIntentId);
             _unitofWork.Save();
-            Response.Headers.Add("Location", session.Url);
+            Response.Headers.Append("Location", session.Url);
             return new StatusCodeResult(303);
         }
 

@@ -32,23 +32,25 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
     options.Password.RequiredLength = 8;
-   
+
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 
 // Register IUserEmailStore<IdentityUser> service
 builder.Services.AddScoped<IUserEmailStore<IdentityUser>, UserStore<IdentityUser, IdentityRole, ApplicationDbContext, string>>();
-builder.Services.ConfigureApplicationCookie(options => {
+builder.Services.ConfigureApplicationCookie(options =>
+{
     options.LoginPath = $"/Identity/Account/Login";
     options.LogoutPath = $"/Identity/Account/Logout";
     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
-builder.Services.AddAuthentication().AddFacebook(option => {
+builder.Services.AddAuthentication().AddFacebook(option =>
+{
     option.AppId = "2867553820077119";
     option.AppSecret = "4cf792a7af3cc6de703796a2e8bec3de";
 });
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IUnitofWork,UnitofWork>();
+builder.Services.AddScoped<IUnitofWork, UnitofWork>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.Configure<MailgunSettings>(builder.Configuration.GetSection("Mailgun"));
 

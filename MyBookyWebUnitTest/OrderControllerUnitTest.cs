@@ -1,4 +1,4 @@
-﻿using MyBooky.Models;
+using MyBooky.Models;
 using Moq;
 using MyBooky.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -74,7 +74,7 @@ namespace MyBookyWebUnitTest
             var mockUnitOfWork = new Mock<IUnitofWork>();
             var controller = new OrderController(mockUnitOfWork.Object);
             controller.OrderVm = new OrderVm { OrderHead = null }; // Simulating OrderHead as null
-            // Act
+                                                                   // Act
             var result = controller.StartProcessing() as ObjectResult;
 
             // Assert that the value is a ProblemDetails object

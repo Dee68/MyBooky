@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace MyBooky.Models
 {
-	public class OrderDetail
-	{
+    public class OrderDetail
+    {
         public int Id { get; set; }
         [Required]
         public int OrderHeadId { get; set; }
