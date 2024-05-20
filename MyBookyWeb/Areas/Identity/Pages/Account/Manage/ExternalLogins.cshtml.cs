@@ -5,21 +5,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account.Manage
 {
-    public class ExternalLoginsModel : PageModel
+    public class ExternalLoginsModel(
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
+        IUserStore<IdentityUser> userStore) : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly IUserStore<IdentityUser> _userStore;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
+        private readonly IUserStore<IdentityUser> _userStore = userStore;
 
-        public ExternalLoginsModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
-            IUserStore<IdentityUser> userStore)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _userStore = userStore;
-        }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -58,7 +52,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account.Manage
                 .Where(auth => CurrentLogins.All(ul => auth.Name != ul.LoginProvider))
                 .ToList();
 
-            string passwordHash = null;
+            string? passwordHash = null;
             if (_userStore is IUserPasswordStore<IdentityUser> userPasswordStore)
             {
                 passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
@@ -108,12 +102,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account.Manage
             }
 
             var userId = await _userManager.GetUserIdAsync(user);
-            var info = await _signInManager.GetExternalLoginInfoAsync(userId);
-            if (info == null)
-            {
-                throw new InvalidOperationException($"Unexpected error occurred loading external login info.");
-            }
-
+            var info = await _signInManager.GetExternalLoginInfoAsync(userId) ?? throw new InvalidOperationException($"Unexpected error occurred loading external login info.");
             var result = await _userManager.AddLoginAsync(user, info);
             if (!result.Succeeded)
             {

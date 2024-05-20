@@ -12,15 +12,10 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
 
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, IUnitofWork unitofWork) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IUnitofWork _unitofWork;
-        public HomeController(ILogger<HomeController> logger, IUnitofWork unitofWork)
-        {
-            _logger = logger;
-            _unitofWork = unitofWork;
-        }
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IUnitofWork _unitofWork = unitofWork;
 
         //public IActionResult Index()
         //{
@@ -66,7 +61,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         }
         public IActionResult Details(int id)
         {
-            ShoppingCart cart = new ShoppingCart()
+            ShoppingCart cart = new()
             {
                 Product = _unitofWork.Product.Get(u => u.Id == id, includeProperties: "Category,ProductImages"),
                 ProductId = id,
@@ -81,8 +76,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
         {
             shoppingCart.Id = 0;//corrects identity_insert set to off error
                                 //retriev logged in user Id
-            var claimsIdentity = User.Identity as ClaimsIdentity;
-            if (claimsIdentity == null || !claimsIdentity.IsAuthenticated)
+            if (User.Identity is not ClaimsIdentity claimsIdentity || !claimsIdentity.IsAuthenticated)
             {
                 // Redirect to the login page
                 return RedirectToAction("Login", "Account");

@@ -7,14 +7,10 @@ using System.Text;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account
 {
-    public class ResetPasswordModel : PageModel
+    public class ResetPasswordModel(UserManager<IdentityUser> userManager) : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
 
-        public ResetPasswordModel(UserManager<IdentityUser> userManager)
-        {
-            _userManager = userManager;
-        }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -63,7 +59,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
 
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string? code = null)
         {
             if (code == null)
             {

@@ -15,36 +15,25 @@ using System.Text;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account
 {
-    public class RegisterModel : PageModel
+    public class RegisterModel(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IUserStore<IdentityUser> userStore,
+        IUserEmailStore<IdentityUser> emailStore,
+        SignInManager<IdentityUser> signInManager,
+        ILogger<RegisterModel> logger,
+        IEmailSender emailSender,
+        IUnitofWork unitofWork) : PageModel
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly IUserEmailStore<IdentityUser> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
-        private readonly IUnitofWork _unitofWork;
+        private readonly SignInManager<IdentityUser> _signInManager = signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly IUserStore<IdentityUser> _userStore = userStore;
+        private readonly IUserEmailStore<IdentityUser> _emailStore = emailStore;
+        private readonly ILogger<RegisterModel> _logger = logger;
+        private readonly IEmailSender _emailSender = emailSender;
+        private readonly IUnitofWork _unitofWork = unitofWork;
 
-        public RegisterModel(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IUserStore<IdentityUser> userStore,
-            IUserEmailStore<IdentityUser> emailStore,
-            SignInManager<IdentityUser> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            IUnitofWork unitofWork)
-        {
-            _emailSender = emailSender;
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _userStore = userStore;
-            _emailStore = emailStore;
-            _signInManager = signInManager;
-            _logger = logger;
-            _unitofWork = unitofWork;
-        }
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -117,7 +106,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string? returnUrl = null)
         {
             Input = new()
             {
@@ -137,7 +126,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -181,7 +170,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId, code, returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -191,7 +180,7 @@ namespace MyBookyWeb.Areas.Identity.Pages.Account
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
 
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
                     }
                     else
                     {

@@ -27,7 +27,8 @@ namespace MyBookyWebUnitTest
         {
             // Arrange
             var mockUnitOfWork = new Mock<IUnitofWork>();
-            var controller = new OrderController(mockUnitOfWork.Object);
+            var loggerMock = new Mock<ILogger<OrderController>>();
+            var controller = new OrderController(mockUnitOfWork.Object, loggerMock.Object);
 
             // Act
             var result = controller.Index() as ViewResult;
@@ -42,6 +43,7 @@ namespace MyBookyWebUnitTest
         {
             // Arrange
             var mockUnitOfWork = new Mock<IUnitofWork>();
+            var loggerMock = new Mock<ILogger<OrderController>>();
             var orderVm = new OrderVm();
             var orderId = 1;
 
@@ -49,13 +51,13 @@ namespace MyBookyWebUnitTest
             var orderHead = new OrderHead { Id = orderId };
             var orderDetail = new List<OrderDetail>
         {
-            new OrderDetail { OrderHeadId = orderId, Product = new Product { Title = "Product 1" } },
-            new OrderDetail { OrderHeadId = orderId, Product = new Product { Title = "Product 2" } }
+            new() { OrderHeadId = orderId, Product = new Product { Title = "Product 1" } },
+            new() { OrderHeadId = orderId, Product = new Product { Title = "Product 2" } }
         };
             mockUnitOfWork.Setup(uow => uow.OrderHead.Get(It.IsAny<Expression<Func<OrderHead, bool>>>(), It.IsAny<string>(), false)).Returns(orderHead);
             mockUnitOfWork.Setup(uow => uow.OrderDetail.GetAll(It.IsAny<Expression<Func<OrderDetail, bool>>>(), It.IsAny<string>())).Returns(orderDetail);
 
-            var controller = new OrderController(mockUnitOfWork.Object);
+            var controller = new OrderController(mockUnitOfWork.Object, loggerMock.Object);
 
             // Act
             var result = controller.Details(orderId) as ViewResult;
@@ -72,9 +74,12 @@ namespace MyBookyWebUnitTest
         {
             // Arrange
             var mockUnitOfWork = new Mock<IUnitofWork>();
-            var controller = new OrderController(mockUnitOfWork.Object);
-            controller.OrderVm = new OrderVm { OrderHead = null }; // Simulating OrderHead as null
-                                                                   // Act
+            var loggerMock = new Mock<ILogger<OrderController>>();
+            var controller = new OrderController(mockUnitOfWork.Object, loggerMock.Object)
+            {
+                OrderVm = new OrderVm { OrderHead = null } // Simulating OrderHead as null
+            };
+            // Act
             var result = controller.StartProcessing() as ObjectResult;
 
             // Assert that the value is a ProblemDetails object

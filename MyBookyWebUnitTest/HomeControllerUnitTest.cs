@@ -46,7 +46,7 @@ namespace MyBookyWebUnitTest
             Assert.IsType<ViewResult>(result);
 
             var model = Assert.IsAssignableFrom<ProductListVm>(result.Model);
-            Assert.Equal(2, model.Products.Count());
+            Assert.Equal(2, model.Products.Count);
             Assert.Equal(2, model.TotalPages);
         }
 
@@ -115,14 +115,16 @@ namespace MyBookyWebUnitTest
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userId)
+                new(ClaimTypes.NameIdentifier, userId)
             };
             var claimsIdentity = new ClaimsIdentity(claims, "TestAuth");
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-            var httpContext = new DefaultHttpContext();
-            httpContext.Session = new TestSession();
-            httpContext.User = claimsPrincipal;
+            DefaultHttpContext httpContext = new()
+            {
+                Session = new TestSession(),
+                User = claimsPrincipal
+            };
             httpContext.Request.Host = new HostString("localhost");
             var controllerContext = new ControllerContext
             {
@@ -131,13 +133,13 @@ namespace MyBookyWebUnitTest
 
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var logger = new Mock<ILogger<HomeController>>();
-            unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false)).Returns((ShoppingCart)null); // Cart not found in database
+            _ = unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false)).Returns(value: null); // Cart not found in database
 
             var controller = new HomeController(logger.Object, unitOfWorkMock.Object)
             {
-                ControllerContext = controllerContext
+                ControllerContext = controllerContext,
+                TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>())
             };
-            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             // Act
             var result = controller.Details(shoppingCart) as RedirectToActionResult;
 

@@ -16,15 +16,13 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize]
-    public class OrderController : Controller
+    public class OrderController(IUnitofWork unitofWork, ILogger<OrderController> logger) : Controller
     {
-        private IUnitofWork _unitofWork;
+        private readonly IUnitofWork _unitofWork = unitofWork;
+        private readonly ILogger<OrderController> _logger = logger;
         [BindProperty]
         public OrderVm OrderVm { get; set; }
-        public OrderController(IUnitofWork unitofWork)
-        {
-            _unitofWork = unitofWork;
-        }
+
         public IActionResult Index()
         {
             if (_unitofWork == null || _unitofWork.OrderHead == null)
@@ -41,7 +39,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Details(int orderId)
         {
-            OrderVm orderVm = new OrderVm()
+            OrderVm orderVm = new ()
             {
                 OrderHead = _unitofWork.OrderHead.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
                 OrderDetail = _unitofWork.OrderDetail.GetAll(u => u.OrderHeadId == orderId, includeProperties: "Product")
@@ -153,7 +151,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             {
                 SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVm.OrderHead.Id}",
                 CancelUrl = domain + $"admin/order/details?orderId={OrderVm.OrderHead.Id}",
-                LineItems = new List<SessionLineItemOptions>(),
+                LineItems = [],
                 Mode = "payment",
             };
 
@@ -187,20 +185,44 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         public IActionResult PaymentConfirmation(int orderHeadId)
         {
 
-            OrderHead orderHead = _unitofWork.OrderHead.Get(u => u.Id == orderHeadId);
+            OrderHead orderHead = _unitofWork.OrderHead.Get(u => u.Id == orderHeadId, includeProperties:"ApplicationUser");
+            // Check if orderHead is null
+            if (orderHead == null)
+            {
+                TempData["warning"] = "Order not found.";
+                return RedirectToAction("Index", "Order");
+            }
             if (orderHead.PaymentStatus == SD.PaymentStatusDelayedPayment)
             {
                 //this is an order by company
-
-                var service = new SessionService();
-                Session session = service.Get(orderHead.SessionId);
-
-                if (session.PaymentStatus.ToLower() == "paid")
+                try
                 {
-                    _unitofWork.OrderHead.UpdateStripePaymentID(orderHeadId, session.Id, session.PaymentIntentId);
-                    _unitofWork.OrderHead.UpdateStatus(orderHeadId, orderHead.OrderStatus, SD.PaymentStatusApproved);
-                    _unitofWork.Save();
+                    var service = new SessionService();
+                    Session session = service.Get(orderHead.SessionId);
+
+                    // Check if session is null
+                    if (session == null)
+                    {
+                        TempData["warning"] = "Payment session not found.";
+                        return RedirectToAction("Index", "Order");
+                    }
+
+                    // Check if the payment status in the session is "paid"
+                    if (session.PaymentStatus.Equals("paid", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        _unitofWork.OrderHead.UpdateStripePaymentID(orderHeadId, session.Id, session.PaymentIntentId);
+                        _unitofWork.OrderHead.UpdateStatus(orderHeadId, orderHead.OrderStatus, SD.PaymentStatusApproved);
+                        _unitofWork.Save();
+                    }
                 }
+                catch (Exception ex)
+                {
+                    // Log the exception 
+                    _logger.LogError(ex, "an error occured while confirming the payment");
+                    TempData["warning"] = "An error occurred while confirming the payment.";
+                    return RedirectToAction("Index", "Order");
+                }
+                
 
 
             }
@@ -224,7 +246,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             else
             {
 
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                ClaimsIdentity? claimsIdentity = User.Identity as ClaimsIdentity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 objOrderHeads = _unitofWork.OrderHead

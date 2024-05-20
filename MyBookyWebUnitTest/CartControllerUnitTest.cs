@@ -1,7 +1,9 @@
+using Castle.Core.Logging;
 using Castle.Core.Smtp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 using Moq;
 using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
@@ -27,6 +29,7 @@ namespace MyBookyWebUnitTest
             // Arrange
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
+            var loggerMock = new Mock<ILogger<CartController>>();
 
 
             var userId = "user123";
@@ -49,7 +52,7 @@ namespace MyBookyWebUnitTest
                         Price100 = 25.0,
                         Author = "Jon Doe",
                         Description = "Description1",
-                        ProductImages = new List<ProductImage> { }
+                        ProductImages = []
                     },
                     Count = 1,
                     ApplicationUserId = "user123",
@@ -94,7 +97,7 @@ namespace MyBookyWebUnitTest
 
             unitOfWorkMock.Setup(u => u.OrderHead.Add(It.IsAny<OrderHead>()));
 
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object);
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object);
 
             var claimsIdentity = new System.Security.Claims.ClaimsIdentity(new[] { new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, userId) });
             var claimsPrincipal = new System.Security.Claims.ClaimsPrincipal(claimsIdentity);
@@ -123,8 +126,9 @@ namespace MyBookyWebUnitTest
             var cartFromDb = new ShoppingCart { Id = cartId, Count = 1 };
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
+            var loggerMock = new Mock<ILogger<CartController>>();
             unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false)).Returns(cartFromDb);
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object);
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object);
 
             // Act
             var result = controller.Plus(cartId) as RedirectToActionResult;
@@ -144,12 +148,13 @@ namespace MyBookyWebUnitTest
             var cartFromDb = new ShoppingCart { Id = cartId, Count = 3 };
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
+            var loggerMock = new Mock<ILogger<CartController>>();
             unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart,
                 bool>>>(),
                 It.IsAny<string>(),
                 false))
                 .Returns(cartFromDb);
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object);
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object);
             //Action
             var result = controller.Minus(cartId) as RedirectToActionResult;
             //Assert
@@ -165,12 +170,13 @@ namespace MyBookyWebUnitTest
             var cartFromDb = new ShoppingCart { Id = cartId, Count = 3 };
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
+            var loggerMock = new Mock<ILogger<CartController>>();
             unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart,
                 bool>>>(),
                 It.IsAny<string>(),
                 false))
                 .Returns(cartFromDb);
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object);
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object);
 
             //Action
             var result = controller.Remove(cartId);
@@ -186,17 +192,17 @@ namespace MyBookyWebUnitTest
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
+            var loggerMock = new Mock<ILogger<CartController>>();
 
 
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object)
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
                     HttpContext = new DefaultHttpContext { User = claimsPrincipal }
-                }
+                },
+                TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
             };
-
-            controller.TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
 
             // Simulate empty shopping cart
             unitOfWorkMock.Setup(u => u.ShoppingCart.GetAll(It.IsAny<Expression<Func<ShoppingCart,
@@ -211,7 +217,7 @@ namespace MyBookyWebUnitTest
                         // Simulate empty shopping cart for the user with the given ApplicationUserId
                         if (userIdPredicate.Compile()(new ShoppingCart { ApplicationUserId = "user123" }))
                         {
-                            return new List<ShoppingCart>();
+                            return [];
                         }
                     }
                     // If the predicate is null or doesn't match the expected condition, return null or an empty list
@@ -235,7 +241,8 @@ namespace MyBookyWebUnitTest
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var emailSenderMock = new Mock<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender>();
-            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object)
+            var loggerMock = new Mock<ILogger<CartController>>();
+            var controller = new CartController(unitOfWorkMock.Object, emailSenderMock.Object, loggerMock.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -263,7 +270,7 @@ namespace MyBookyWebUnitTest
                         Price100 = 25.0,
                         Author = "Jon Doe",
                         Description = "Description1",
-                        ProductImages = new List<ProductImage> { }
+                        ProductImages = []
                     },
                     Count = 1,
                     ApplicationUserId = "user123",

@@ -11,18 +11,12 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class UserController : Controller
+    public class UserController(UserManager<IdentityUser> userManager, IUnitofWork unitofWork, RoleManager<IdentityRole> roleManager) : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IUnitofWork _unitofWork;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly IUnitofWork _unitofWork = unitofWork;
 
-        public UserController(UserManager<IdentityUser> userManager, IUnitofWork unitofWork, RoleManager<IdentityRole> roleManager)
-        {
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _unitofWork = unitofWork;
-        }
         public IActionResult Index()
         {
             return View();
@@ -30,7 +24,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         public IActionResult RoleManagement(string userId)
         {
 
-            RoleManagementVM RoleVM = new RoleManagementVM()
+            RoleManagementVM RoleVM = new()
             {
                 ApplicationUser = _unitofWork.ApplicationUser.Get(u => u.Id == userId, includeProperties: "Company"),
                 RoleList = _roleManager.Roles.Select(i => new SelectListItem
@@ -53,14 +47,14 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult RoleManagement(RoleManagementVM roleManagmentVM)
         {
-
-            string oldRole = _userManager.GetRolesAsync(_unitofWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id))
-                    .GetAwaiter().GetResult().FirstOrDefault();
+            var user = _unitofWork.ApplicationUser.Get(u => u.Id ==roleManagmentVM.ApplicationUser.Id) ?? throw new InvalidOperationException("User not found.");
+            var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
+             var oldRole = roles.FirstOrDefault();
 
             ApplicationUser applicationUser = _unitofWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id);
 
 
-            if (!(roleManagmentVM.ApplicationUser.Role == oldRole))
+            if (roleManagmentVM.ApplicationUser.Role != oldRole)
             {
                 //a role was updated
                 if (roleManagmentVM.ApplicationUser.Role == SD.Role_Company)
@@ -103,13 +97,10 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 
                 user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
-                if (user.Company == null)
-                {
-                    user.Company = new Company()
+                user.Company ??= new Company()
                     {
                         Name = ""
                     };
-                }
             }
 
             return Json(new { data = objUserList });

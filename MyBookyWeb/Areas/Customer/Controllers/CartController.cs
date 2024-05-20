@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using MyBooky.DataAccess.Repository;
+using Microsoft.Extensions.Logging;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
@@ -13,17 +13,14 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     [Authorize]
-    public class CartController : Controller
+    public class CartController(IUnitofWork unitofWork, IEmailSender emailSender, ILogger<CartController> logger) : Controller
     {
-        private readonly IUnitofWork _unitofWork;
-        private readonly IEmailSender _emailSender;
+        private readonly IUnitofWork _unitofWork = unitofWork;
+        private readonly IEmailSender _emailSender = emailSender;
+        private readonly ILogger<CartController> _logger = logger;
         [BindProperty]
         public ShoppingCartVm ShoppingCartVm { get; set; }
-        public CartController(IUnitofWork unitofWork, IEmailSender emailSender)
-        {
-            _unitofWork = unitofWork;
-            _emailSender = emailSender;
-        }
+
         public IActionResult Index()
         {
             //get the userId
@@ -33,7 +30,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             // Initialize the ShoppingCartVm object
             ShoppingCartVm = new ShoppingCartVm()
             {
-                ShoppingCartList = new List<ShoppingCart>(), // Initialize an empty list
+                ShoppingCartList = [], // Initialize an empty list
                 OrderHead = new()
             };
             if (userIdClaim != null)
@@ -51,7 +48,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
                     foreach (var cart in ShoppingCartVm.ShoppingCartList)
                     {
-                        cart.Product = cart.Product ?? new Product(); // Ensure Product is not null
+                        cart.Product ??= new Product(); // Ensure Product is not null
                         cart.Product.ProductImages = productImages?.Where(u => u.ProductId == cart.Product.Id).ToList();
                         cart.Price = GetPriceBasedOnQuantity(cart);
                         ShoppingCartVm.OrderHead.OrderTotal += (cart.Price * cart.Count);
@@ -59,10 +56,11 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex, "An error occurred while loading the productImage.");
                     foreach (var cart in ShoppingCartVm.ShoppingCartList)
                     {
-                        cart.Product = cart.Product ?? new Product(); // Ensure Product is not null
-                        cart.Product.ProductImages = new List<ProductImage>();
+                        cart.Product ??= new Product(); // Ensure Product is not null
+                        cart.Product.ProductImages = [];
                     }
                 }
 
@@ -135,7 +133,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             // Initialize the ShoppingCartVm object
             ShoppingCartVm = new ShoppingCartVm()
             {
-                ShoppingCartList = new List<ShoppingCart>(), // Initialize an empty list
+                ShoppingCartList = [], // Initialize an empty list
                 OrderHead = new()
             };
 
@@ -166,8 +164,9 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while loading the cart.");
                 return View(ShoppingCartVm);
-                //return RedirectToAction(nameof(Index));
+                
             }
             return View(ShoppingCartVm);
 
@@ -244,7 +243,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
                     {
                         SuccessUrl = domain + $"Customer/Cart/OrderConfirmation?id={ShoppingCartVm.OrderHead.Id}",
                         CancelUrl = domain + $"Customer/Cart/index",
-                        LineItems = new List<SessionLineItemOptions>(),
+                        LineItems = [],
                         Mode = "payment"
                     };
                     foreach (var item in ShoppingCartVm.ShoppingCartList)
@@ -334,7 +333,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 
             return View(id);
         }
-        private double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
+        private static double GetPriceBasedOnQuantity(ShoppingCart shoppingCart)
         {
             if (shoppingCart.Count <= 50)
             {

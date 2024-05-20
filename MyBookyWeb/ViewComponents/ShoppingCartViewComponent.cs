@@ -6,13 +6,9 @@ using System.Security.Claims;
 
 namespace MyBookyWeb.ViewComponents
 {
-    public class ShoppingCartViewComponent : ViewComponent
+    public class ShoppingCartViewComponent(IUnitofWork unitofWork) : ViewComponent
     {
-        private readonly IUnitofWork _unitofWork;
-        public ShoppingCartViewComponent(IUnitofWork unitofWork)
-        {
-            _unitofWork = unitofWork;
-        }
+        private readonly IUnitofWork _unitofWork = unitofWork;
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
