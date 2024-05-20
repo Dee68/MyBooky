@@ -93,7 +93,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           github-token: ${{secrets.GH_TOKEN}}
-          scripts: |
+          script: |
             const { context, GitHub } = require('@actions/github');
             const github = new GitHub(secrets.GH_TOKEN);
 
