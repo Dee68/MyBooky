@@ -19,7 +19,15 @@ jobs:
   dev:
     runs-on: ubuntu-latest
     environment: development
+    strategy:
+      matrix:
+        node-version: [20.x]
     steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
       # Checkout repository
       - uses: actions/checkout@v4
 
