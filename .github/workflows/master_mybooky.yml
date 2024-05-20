@@ -25,14 +25,14 @@ jobs:
 
       # Set up .NET Core
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v1.7.0
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
           include-prerelease: true
 
       # Cache dependencies for test project
       - name: Cache dependencies for test project
-        uses: actions/cache@v2
+        uses: actions/cache@v2.2.2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -53,17 +53,17 @@ jobs:
 
       # Initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v2.8.1
         with:
           languages: 'csharp,javascript'
 
       # Autobuild for CodeQL
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v2.8.1
 
       # Cache dependencies for main projects
       - name: Cache dependencies for main projects
-        uses: actions/cache@v2
+        uses: actions/cache@v2.2.2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -72,23 +72,23 @@ jobs:
 
       # Initialize Lint
       - name: Checkout Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.0
 
       # Set up
       - name: Set up .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v1.7.0
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
       # Run Linters
       - name: Run Linters
-        uses: wearerequired/lint-action@v2
+        uses: wearerequired/lint-action@v2.3.0
         with:
           dotnet_format: true
 
       # Check runs with annotations
       - name: Create check runs with commit annotations
-        uses: actions/github-script@v4
+        uses: actions/github-script@v4.0.0
         with:
           github-token: ${{secrets.GH_TOKEN}}
           script: |
