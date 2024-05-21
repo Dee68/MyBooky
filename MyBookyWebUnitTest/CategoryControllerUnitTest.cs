@@ -175,7 +175,7 @@ namespace MyBookyWebUnitTest
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             categoryCtrl.TempData = tempData; // Set TempData in the controller
 
-            _unitofwork.Setup(u => u.Category.Get(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>(),false)).Returns(categoryFromDb);
+            _unitofwork.Setup(u => u.Category.Get(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>(), false)).Returns(categoryFromDb);
 
             //Action
             var result = categoryCtrl.DeletePost(categoryId);
