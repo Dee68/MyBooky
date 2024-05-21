@@ -38,7 +38,7 @@ jobs:
 
       # Cache dependencies for test project
       - name: Cache dependencies for test project
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -59,13 +59,13 @@ jobs:
 
       # Initialize CodeQL
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v2.17.3
         with:
           languages: 'csharp,javascript'
 
       # Autobuild for CodeQL
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v2.17.3
 
       # Cache dependencies for main projects
       - name: Cache dependencies for main projects
@@ -78,7 +78,7 @@ jobs:
 
       # Initialize Lint
       - name: Checkout Git Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Set up
       - name: Set up .NET
