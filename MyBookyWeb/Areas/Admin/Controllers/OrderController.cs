@@ -29,7 +29,6 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             {
                 // Handle null reference gracefully
                 return View("Index");
-                //return NotFound(); 
             }
             IEnumerable<OrderHead> orderHeads = _unitofWork.OrderHead.GetAll(includeProperties: "ApplicationUser");
 
@@ -77,7 +76,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult StartProcessing()
         {
-            if (OrderVm.OrderHead == null || OrderVm.OrderHead == null)
+            if (OrderVm == null)
             {
                 return Problem("Bad request", null, 404);
             }
@@ -125,6 +124,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 Refund refund = service.Create(options);
 
                 _unitofWork.OrderHead.UpdateStatus(orderHead.Id, SD.StatusCancelled, SD.StatusRefunded);
+                _logger.LogWarning("Customers order has been canceled: {Refund}", refund.ToString());
             }
             else
             {

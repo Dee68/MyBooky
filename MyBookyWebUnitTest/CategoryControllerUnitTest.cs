@@ -92,11 +92,6 @@ namespace MyBookyWebUnitTest
         public void EditGet()
         {
             // Arrange
-            var c1 = new Category { Id = 1, Name = "Mathematics", DisplayOrder = 1 };
-            var c2 = new Category { Id = 2, Name = "History", DisplayOrder = 2 };
-            var c3 = new Category { Id = 3, Name = "Physics", DisplayOrder = 3 };
-            var categoryList = new List<Category> { c1, c2, c3 };
-
             var categoryId = 1; // The category Id to be retrieved
 
             var categoryFromDb = new Category { Id = categoryId, Name = "Mathematics", DisplayOrder = 1 };
@@ -107,11 +102,10 @@ namespace MyBookyWebUnitTest
             _unitofwork.Setup(u => u.Category.GetById(categoryId)).Returns(categoryFromDb);
 
             // Action
-            var result = categoryCtrl.Edit(categoryId) as ViewResult;
 
             // Assert
 
-            if (result != null)
+            if (categoryCtrl.Edit(categoryId) is ViewResult result)
             {
                 // Check if the model is of the expected type
                 Assert.IsType<Category>(result.Model);
@@ -128,11 +122,6 @@ namespace MyBookyWebUnitTest
         public void DeleteGet()
         {
             // Arrange
-            var c1 = new Category { Id = 1, Name = "Mathematics", DisplayOrder = 1 };
-            var c2 = new Category { Id = 2, Name = "History", DisplayOrder = 2 };
-            var c3 = new Category { Id = 3, Name = "Physics", DisplayOrder = 3 };
-            var categoryList = new List<Category> { c1, c2, c3 };
-
             var categoryId = 1; // The category Id to be retrieved
 
             var categoryFromDb = new Category { Id = categoryId, Name = "Mathematics", DisplayOrder = 1 };
@@ -143,11 +132,10 @@ namespace MyBookyWebUnitTest
             _unitofwork.Setup(u => u.Category.GetById(categoryId)).Returns(categoryFromDb);
 
             // Action
-            var result = categoryCtrl.Delete(categoryId) as ViewResult;
 
             // Assert
 
-            if (result != null)
+            if (categoryCtrl.Delete(categoryId) is ViewResult result)
             {
                 // Check if the model is of the expected type
                 Assert.IsType<Category>(result.Model);
@@ -175,10 +163,6 @@ namespace MyBookyWebUnitTest
         public void Delete()
         {
             // Arrange
-            var c1 = new Category { Id = 1, Name = "Mathematics", DisplayOrder = 1 };
-            var c2 = new Category { Id = 2, Name = "History", DisplayOrder = 2 };
-            var c3 = new Category { Id = 3, Name = "Physics", DisplayOrder = 3 };
-            var categoryList = new List<Category> { c1, c2, c3 };
 
             var categoryId = 1; // The category Id to be deleted
 
@@ -191,7 +175,7 @@ namespace MyBookyWebUnitTest
             var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
             categoryCtrl.TempData = tempData; // Set TempData in the controller
 
-            _unitofwork.Setup(u => u.Category.GetById(categoryId)).Returns(categoryFromDb);
+            _unitofwork.Setup(u => u.Category.Get(It.IsAny<Expression<Func<Category, bool>>>(), It.IsAny<string>(),false)).Returns(categoryFromDb);
 
             //Action
             var result = categoryCtrl.DeletePost(categoryId);
@@ -209,15 +193,32 @@ namespace MyBookyWebUnitTest
             var c1 = new Category { Id = 1, Name = "Mathematics", DisplayOrder = 1 };
             var c2 = new Category { Id = 2, Name = "History", DisplayOrder = 2 };
             var c3 = new Category { Id = 3, Name = "Physics", DisplayOrder = 3 };
-            var categoryList = new List<Category> { c1, c2, c3 };
+            _ = new List<Category> { c1, c2, c3 };
 
             var categoryId = 1; // The category Id to be retrieved
-
-            var categoryFromDb = new Category { Id = categoryId, Name = "Mathematics", DisplayOrder = 1 };
+            var categoryToUpdate = new Category { Id = categoryId, Name = "Mathematics", DisplayOrder = 1 };
 
             var _unitofwork = new Mock<IUnitofWork>();
             var categoryCtrl = new CategoryController(_unitofwork.Object);
 
+            // Mock TempData
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            categoryCtrl.TempData = tempData; // Set TempData in the controller
+
+            // Ensure ModelState is valid
+            categoryCtrl.ModelState.Clear();
+
+            _unitofwork.Setup(u => u.Category.Update(categoryToUpdate));
+            _unitofwork.Setup(u => u.Save());
+
+            // Action
+            var result = categoryCtrl.Edit(categoryToUpdate) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(result); // Ensure result is not null
+            Assert.Equal("Index", result.ActionName);
+            Assert.Equal("Category successfully updated", categoryCtrl.TempData["success"]);
         }
+
     }
 }

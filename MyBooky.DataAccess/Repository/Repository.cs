@@ -71,13 +71,13 @@ namespace MyBooky.DataAccess.Repository
                     query = query.Include(includeProp);
                 }
             }
-            return query.ToList();
+            return [.. query];
         }
 
         public IEnumerable<T> GetAll()
         {
             IQueryable<T> query = dbSet;
-            return query.ToList();
+            return [.. query];
         }
 
         public void Remove(T item)

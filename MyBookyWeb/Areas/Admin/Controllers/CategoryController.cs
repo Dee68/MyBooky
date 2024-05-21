@@ -8,13 +8,10 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class CategoryController : Controller
+    public class CategoryController(IUnitofWork unitofWork) : Controller
     {
-        private readonly IUnitofWork _unitofWork;
-        public CategoryController(IUnitofWork unitofWork)
-        {
-            _unitofWork = unitofWork;
-        }
+        private readonly IUnitofWork _unitofWork = unitofWork;
+
         public IActionResult Index()
         {
             List<Category> categories = _unitofWork.Category.GetAll().ToList();
@@ -66,7 +63,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
             }
             return View();
         }
-        public IActionResult Delete(int? id)
+        public IActionResult DeleteGet(int? id)
         {
             if (id == null || id == 0)
             {
@@ -81,14 +78,14 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePost(int id)
+        public IActionResult DeletePost(int? id)
         {
             if (id == null || id == 0)
             {
                 return NotFound();
             }
 
-            Category categoryFromDb = _unitofWork.Category.GetById(id);
+            Category categoryFromDb = _unitofWork.Category.Get(u => u.Id == id);
             if (categoryFromDb == null)
             {
                 return NotFound(id);

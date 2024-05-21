@@ -8,18 +8,10 @@ using System;
 
 namespace MyBooky.Utilities
 {
-    public class EmailSender : IEmailSender
+    public class EmailSender(IConfiguration _config) : IEmailSender
     {
-        public string? MailgunApiKey { get; set; }
-        public string? MailgunDomain { get; set; }
-
-        public EmailSender(IConfiguration _config)
-        {
-            MailgunApiKey = _config.GetValue<string>("Mailgun:ApiKey");
-            MailgunDomain = _config.GetValue<string>("Mailgun:Domain");
-
-        }
-
+        public string? MailgunApiKey { get; set; } = _config.GetValue<string>("Mailgun:ApiKey");
+        public string? MailgunDomain { get; set; } = _config.GetValue<string>("Mailgun:Domain");
 
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
@@ -27,8 +19,8 @@ namespace MyBooky.Utilities
             {
                 throw new InvalidOperationException("Mailgun API key or domain is not configured.");
             }
-            RestClient client = new RestClient("https://api.mailgun.net/v3");
-            RestRequest request = new RestRequest();
+            RestClient client = new("https://api.mailgun.net/v3");
+            RestRequest request = new();
 
             // Set up authentication
             string apiKey = "api:" + MailgunApiKey;

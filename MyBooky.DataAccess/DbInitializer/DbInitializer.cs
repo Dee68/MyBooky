@@ -1,27 +1,23 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MyBooky.Models;
 using MyBooky.Utilities;
 using MyBookyWeb.DataAccess.Data;
 
 namespace MyBooky.DataAccess.DbInitializer
 {
-    public class DbInitializer : IDbInitializer
+    public class DbInitializer(
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        ApplicationDbContext db,
+        ILogger<DbInitializer> logger
+            ) : IDbInitializer
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly ApplicationDbContext _db;
-
-        public DbInitializer(
-            UserManager<IdentityUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext db
-            )
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _db = db;
-        }
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly ApplicationDbContext _db = db;
+        private readonly ILogger<DbInitializer> _logger = logger;
         public void Initialize()
         {
             //migrations if they are not applied
@@ -39,8 +35,8 @@ namespace MyBooky.DataAccess.DbInitializer
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it in a meaningful way
-                Console.WriteLine($"An error occurred during database initialization: {ex.Message}");
+                // Log the exception
+                _logger.LogError(ex, "An error occurred during database initialization");
             }
 
 
@@ -65,7 +61,7 @@ namespace MyBooky.DataAccess.DbInitializer
             if (_userManager.FindByEmailAsync(adminEmail).GetAwaiter().GetResult() == null)
             {
                 // Generate a random temporary password
-                var temporaryPassword = GenerateTemporaryPassword();
+                var temporaryPassword = GenerateTemporaryPassword;
                 // Create admin user
                 var adminUser = new ApplicationUser
                 {
@@ -89,14 +85,12 @@ namespace MyBooky.DataAccess.DbInitializer
                 }
                 else
                 {
-                    throw new ApplicationException($"Unable to create admin user: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    string? description = result.Errors.Select(x => x.Description).FirstOrDefault();
+                    _logger.LogError("Unable to create admin user: {Description} ", description);
                 }
             }
 
         }
-        private string GenerateTemporaryPassword()
-        {
-            return "Temp@1432"; // Change this later to use your actual password
-        }
+        private static string GenerateTemporaryPassword => "Temp@1432"; // Change this later to use your actual password
     }
 }

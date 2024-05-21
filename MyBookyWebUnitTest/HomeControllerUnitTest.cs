@@ -133,7 +133,8 @@ namespace MyBookyWebUnitTest
 
             var unitOfWorkMock = new Mock<IUnitofWork>();
             var logger = new Mock<ILogger<HomeController>>();
-            _ = unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false)).Returns(value: null); // Cart not found in database
+            _ = unitOfWorkMock.Setup(u => u.ShoppingCart.Get(It.IsAny<Expression<Func<ShoppingCart, bool>>>(), It.IsAny<string>(), false))
+                .Returns(value: shoppingCart); // Cart not found in database
 
             var controller = new HomeController(logger.Object, unitOfWorkMock.Object)
             {

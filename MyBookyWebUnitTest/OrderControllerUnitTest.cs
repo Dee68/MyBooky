@@ -44,7 +44,6 @@ namespace MyBookyWebUnitTest
             // Arrange
             var mockUnitOfWork = new Mock<IUnitofWork>();
             var loggerMock = new Mock<ILogger<OrderController>>();
-            var orderVm = new OrderVm();
             var orderId = 1;
 
             // Mock OrderHead and OrderDetail data
@@ -69,26 +68,35 @@ namespace MyBookyWebUnitTest
             Assert.Equal(orderHead, model.OrderHead);
             Assert.Equal(orderDetail, model.OrderDetail);
         }
+
         [Fact]
-        public void StartProcessing_ReturnsErrorWithNull_OrderVm()
+        public void StartProcessing_ValidOrderVm_UpdatesOrderStatus()
         {
             // Arrange
+            var orderHeadId = 1;
+            var orderHead = new OrderHead { Id = orderHeadId };
             var mockUnitOfWork = new Mock<IUnitofWork>();
             var loggerMock = new Mock<ILogger<OrderController>>();
-            var controller = new OrderController(mockUnitOfWork.Object, loggerMock.Object)
+            var _controller = new OrderController(mockUnitOfWork.Object, loggerMock.Object)
             {
-                OrderVm = new OrderVm { OrderHead = null } // Simulating OrderHead as null
+                OrderVm = new OrderVm { OrderHead = orderHead }
             };
+            mockUnitOfWork.Setup(uow => uow.OrderHead.UpdateStatus(orderHeadId, SD.StatusInProcess, SD.PaymentStatusApproved));
+            mockUnitOfWork.Setup(uow => uow.Save());
+            //Setup
+            // Mock TempData
+            var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+            _controller.TempData = tempData; // Set TempData in the controller
             // Act
-            var result = controller.StartProcessing() as ObjectResult;
+            var result = _controller.StartProcessing();
 
-            // Assert that the value is a ProblemDetails object
-            var problemDetails = Assert.IsType<ProblemDetails>(result.Value);
-            // Assert specific properties of ProblemDetails
-            Assert.Equal("Bad request", problemDetails.Detail);
-            Assert.Null(problemDetails.Title);
-            Assert.Null(problemDetails.Instance);
-
+            // Assert
+            Assert.IsType<RedirectToActionResult>(result);
+            var redirectToAction = (RedirectToActionResult)result;
+            Assert.Equal("Details", redirectToAction.ActionName);
+            Assert.Equal(orderHeadId, redirectToAction.RouteValues["orderId"]);
+            Assert.Equal("Order Details Updated Successfully.", _controller.TempData["Success"]);
         }
+
     }
 }

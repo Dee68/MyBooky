@@ -6,29 +6,72 @@ using System.Reflection.Emit;
 
 namespace MyBookyWeb.DataAccess.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<IdentityUser>(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public DbSet<Category> Categories
         {
-
+            get;
+            set;
         }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-        public DbSet<OrderHead> OrderHeads { get; set; }
-        public DbSet<OrderDetail> OrderDetails { get; set; }
-        public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Company> Companies
+        {
+            get;
+            set;
+        }
+        public DbSet<ApplicationUser> ApplicationUsers
+        {
+            get;
+            set;
+        }
+        public DbSet<ShoppingCart> ShoppingCarts
+        {
+            get;
+            set;
+        }
+        public DbSet<OrderHead> OrderHeads
+        {
+            get;
+            set;
+        }
+        public DbSet<OrderDetail> OrderDetails
+        {
+            get;
+            set;
+        }
+        public DbSet<ProductImage> ProductImages
+        {
+            get;
+            set;
+        }
+        public DbSet<Product> Products
+        {
+            get;
+            set;
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
             base.OnModelCreating(builder);
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Mathematics", DisplayOrder = 1 },
-                new Category { Id = 2, Name = "Physics", DisplayOrder = 2 },
-                new Category { Id = 3, Name = "History", DisplayOrder = 3 });
+                new Category
+                {
+                    Id = 1,
+                    Name = "Mathematics",
+                    DisplayOrder = 1
+                },
+                new Category
+                {
+                    Id = 2,
+                    Name = "Physics",
+                    DisplayOrder = 2
+                },
+                new Category
+                {
+                    Id = 3,
+                    Name = "History",
+                    DisplayOrder = 3
+                });
             builder.Entity<Company>().HasData(
                 new Company
                 {
@@ -60,23 +103,23 @@ namespace MyBookyWeb.DataAccess.Data
                     State = "NY",
                     PhoneNumber = "1113335555"
                 }
-                );
+            );
 
             builder.Entity<Product>().HasData(
-               new Product
-               {
-                   Id = 1,
-                   Title = "1491:New Revelations of the Americas Before Columbus",
-                   Description = "In this groundbreaking work of science, history, and archaeology, Charles C. Mann radically alters our understanding of the Americas before the arrival of Columbus in 1492.",
-                   Author = "Charles C. Mann",
-                   ISBN = "98767114J3900",
-                   ListPrice = 16,
-                   Price = 18,
-                   Price50 = 14,
-                   Price100 = 12,
-                   CategoryId = 1,
-                   ProductImages = []
-               },
+                new Product
+                {
+                    Id = 1,
+                    Title = "1491:New Revelations of the Americas Before Columbus",
+                    Description = "In this groundbreaking work of science, history, and archaeology, Charles C. Mann radically alters our understanding of the Americas before the arrival of Columbus in 1492.",
+                    Author = "Charles C. Mann",
+                    ISBN = "98767114J3900",
+                    ListPrice = 16,
+                    Price = 18,
+                    Price50 = 14,
+                    Price100 = 12,
+                    CategoryId = 1,
+                    ProductImages = []
+                },
                 new Product
                 {
                     Id = 2,

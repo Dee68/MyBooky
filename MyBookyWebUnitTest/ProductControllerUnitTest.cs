@@ -35,7 +35,7 @@ namespace MyBookyWebUnitTest
                 Price100 = 25.0,
                 Author = "Jon Doe",
                 Description = "Description1",
-                ProductImages = new List<ProductImage> { }
+                ProductImages = []
             };
             var p2 = new Product
             {
@@ -48,7 +48,7 @@ namespace MyBookyWebUnitTest
                 Price100 = 25.0,
                 Author = "Jane Long",
                 Description = "Description1",
-                ProductImages = new List<ProductImage> { }
+                ProductImages = []
             };
             var p3 = new Product
             {
@@ -61,7 +61,7 @@ namespace MyBookyWebUnitTest
                 Price100 = 25.0,
                 Author = "Jack Neils",
                 Description = "Description1",
-                ProductImages = new List<ProductImage> { }
+                ProductImages = []
             };
             var productList = new List<Product> { p1, p2, p3 };
 
@@ -89,8 +89,8 @@ namespace MyBookyWebUnitTest
             var webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
             var expectedCategoryList = new List<Category>
             {
-                 new Category { Id = 1, Name = "Category1" },
-                 new Category { Id = 2, Name = "Category2" }
+                 new() { Id = 1, Name = "Category1" },
+                 new() { Id = 2, Name = "Category2" }
             };
 
             _unitofwork.Setup(u => u.Category.GetAll()).Returns(expectedCategoryList);
@@ -113,8 +113,8 @@ namespace MyBookyWebUnitTest
             var webHostEnvironmentMock = new Mock<IWebHostEnvironment>();
             var expectedCategoryList = new List<Category>
             {
-                 new Category { Id = 1, Name = "Category1" },
-                 new Category { Id = 2, Name = "Category2" }
+                 new() { Id = 1, Name = "Category1" },
+                 new() { Id = 2, Name = "Category2" }
             };
             _unitofWork.Setup(u => u.Category.GetAll()).Returns(expectedCategoryList);
             var productCtrl = new ProductController(_unitofWork.Object, webHostEnvironmentMock.Object);

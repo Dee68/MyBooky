@@ -26,7 +26,8 @@
                             <div class="d-none d-lg-block col-lg-1 text-center py-2">
                                 @if (item.Product.ProductImages != null && item.Product.ProductImages.Count() > 0)
                                 {
-                                    <img src="@item.Product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded w-100" />
+                                    @* <img src="@item.Product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded w-100" /> *@
+                                    <img src="@item.Product.ProductImages.FirstOrDefault().ImageUrl" class="card-img-top rounded" />
                                 }
                                 else
                                 {
@@ -86,4 +87,5 @@
                 </div>
             </div>
         </div>
+    </div>
 </form>

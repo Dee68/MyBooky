@@ -15,8 +15,9 @@ namespace MyBooky.Models.ViewModels
 
         public RoleManagementVM()
         {
-            RoleList = new List<SelectListItem>();
-            CompanyList = new List<SelectListItem>();
+            IEnumerable<SelectListItem> value = [];
+            RoleList = value;
+            CompanyList = [];
             ApplicationUser = new ApplicationUser();
         }
     }
