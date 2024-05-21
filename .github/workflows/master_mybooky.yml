@@ -86,11 +86,16 @@ jobs:
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
-      # Run Linters
-      - name: Run Linters
-        uses: wearerequired/lint-action@v2
-        with:
-          dotnet_format: true
+      # Run Super-Linter
+      - name: Run Super-Linter
+        uses: github/super-linter@v4
+        env:
+          VALIDATE_CSHARP: true
+          VALIDATE_JAVASCRIPT_ES: true
+          VALIDATE_HTML: true
+          VALIDATE_CSS: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
       # Build main projects
