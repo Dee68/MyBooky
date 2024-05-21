@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
+using MyBooky.Models.ViewModels;
 using MyBooky.Utilities;
 using System.Diagnostics;
 using System.Security.Claims;
-using MyBooky.Models.ViewModels;
 
 namespace MyBookyWeb.Areas.Customer.Controllers
 {

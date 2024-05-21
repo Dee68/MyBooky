@@ -47,9 +47,9 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult RoleManagement(RoleManagementVM roleManagmentVM)
         {
-            var user = _unitofWork.ApplicationUser.Get(u => u.Id ==roleManagmentVM.ApplicationUser.Id) ?? throw new InvalidOperationException("User not found.");
+            var user = _unitofWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id) ?? throw new InvalidOperationException("User not found.");
             var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
-             var oldRole = roles.FirstOrDefault();
+            var oldRole = roles.FirstOrDefault();
 
             ApplicationUser applicationUser = _unitofWork.ApplicationUser.Get(u => u.Id == roleManagmentVM.ApplicationUser.Id);
 
@@ -98,9 +98,9 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                 user.Role = _userManager.GetRolesAsync(user).GetAwaiter().GetResult().FirstOrDefault();
 
                 user.Company ??= new Company()
-                    {
-                        Name = ""
-                    };
+                {
+                    Name = ""
+                };
             }
 
             return Json(new { data = objUserList });

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account.Manage
 {

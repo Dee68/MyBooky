@@ -1,22 +1,22 @@
-using MyBooky.Models;
-using Moq;
-using MyBooky.DataAccess.Repository.IRepository;
+using Castle.Core.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
-using Xunit;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Hosting;
-using MyBooky.Models.ViewModels;
-using MyBooky.DataAccess.Repository;
-using Castle.Core.Logging;
-using MyBookyWeb.Areas.Customer.Controllers;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Moq;
+using MyBooky.DataAccess.Repository;
+using MyBooky.DataAccess.Repository.IRepository;
+using MyBooky.Models;
+using MyBooky.Models.ViewModels;
 using MyBooky.Utilities;
-using System.Security.Claims;
 using MyBookyWeb.Areas.Admin.Controllers;
+using MyBookyWeb.Areas.Customer.Controllers;
+using System.Linq.Expressions;
+using System.Security.Claims;
+using Xunit;
 
 namespace MyBookyWebUnitTest
 {

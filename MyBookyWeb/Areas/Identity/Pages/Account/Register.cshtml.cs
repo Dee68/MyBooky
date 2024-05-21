@@ -10,8 +10,8 @@ using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Utilities;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account
 {

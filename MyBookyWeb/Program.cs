@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using MyBooky.DataAccess.DbInitializer;
 using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
-using MyBookyWeb.DataAccess.Data;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using MyBooky.Utilities;
+using MyBookyWeb.DataAccess.Data;
 using Stripe;
 
 

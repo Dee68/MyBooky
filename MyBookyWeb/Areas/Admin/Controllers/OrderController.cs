@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
+using MyBooky.Utilities;
 using Stripe;
 using Stripe.Checkout;
-using MyBooky.Utilities;
+using Stripe.Climate;
 using System.Diagnostics;
 using System.Security.Claims;
-using MyBooky.DataAccess.Repository;
-using Stripe.Climate;
 
 namespace MyBookyWeb.Areas.Admin.Controllers
 {
@@ -39,7 +39,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         }
         public IActionResult Details(int orderId)
         {
-            OrderVm orderVm = new ()
+            OrderVm orderVm = new()
             {
                 OrderHead = _unitofWork.OrderHead.Get(u => u.Id == orderId, includeProperties: "ApplicationUser"),
                 OrderDetail = _unitofWork.OrderDetail.GetAll(u => u.OrderHeadId == orderId, includeProperties: "Product")
@@ -185,7 +185,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
         public IActionResult PaymentConfirmation(int orderHeadId)
         {
 
-            OrderHead orderHead = _unitofWork.OrderHead.Get(u => u.Id == orderHeadId, includeProperties:"ApplicationUser");
+            OrderHead orderHead = _unitofWork.OrderHead.Get(u => u.Id == orderHeadId, includeProperties: "ApplicationUser");
             // Check if orderHead is null
             if (orderHead == null)
             {
@@ -222,7 +222,7 @@ namespace MyBookyWeb.Areas.Admin.Controllers
                     TempData["warning"] = "An error occurred while confirming the payment.";
                     return RedirectToAction("Index", "Order");
                 }
-                
+
 
 
             }

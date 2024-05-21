@@ -1,18 +1,18 @@
-using MyBooky.Models;
-using MyBookyWeb.Areas.Admin.Controllers;
-using Moq;
-using MyBooky.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Http;
-using Xunit;
-using System.Collections.Generic;
-using System;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Hosting;
-using MyBooky.Models.ViewModels;
+using Moq;
 using MyBooky.DataAccess.Repository;
+using MyBooky.DataAccess.Repository.IRepository;
+using MyBooky.Models;
+using MyBooky.Models.ViewModels;
+using MyBookyWeb.Areas.Admin.Controllers;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Xunit;
 
 
 namespace MyBookyWebUnitTest

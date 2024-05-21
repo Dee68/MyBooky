@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MyBooky.Utilities;
 using MyBooky.Models;
+using MyBooky.Utilities;
 using MyBookyWeb.DataAccess.Data;
 
 namespace MyBooky.DataAccess.DbInitializer
@@ -100,4 +100,3 @@ namespace MyBooky.DataAccess.DbInitializer
         }
     }
 }
-

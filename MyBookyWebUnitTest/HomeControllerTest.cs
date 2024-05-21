@@ -1,14 +1,14 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
-using MyBookyWeb.Areas.Customer.Controllers;
 using MyBooky.Models.ViewModels;
+using MyBookyWeb.Areas.Customer.Controllers;
 using System.Collections.Generic;
-using Xunit;
-using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
-using Microsoft.AspNetCore.Http;
+using Xunit;
 
 namespace MyBookyWebUnitTest
 {

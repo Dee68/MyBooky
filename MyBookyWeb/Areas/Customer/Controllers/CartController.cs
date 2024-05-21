@@ -166,7 +166,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
             {
                 _logger.LogError(ex, "An error occurred while loading the cart.");
                 return View(ShoppingCartVm);
-                
+
             }
             return View(ShoppingCartVm);
 

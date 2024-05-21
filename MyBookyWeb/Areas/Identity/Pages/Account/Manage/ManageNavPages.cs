@@ -2,8 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace MyBookyWeb.Areas.Identity.Pages.Account.Manage
 {
