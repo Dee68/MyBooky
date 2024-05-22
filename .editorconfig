@@ -11,6 +11,10 @@ indent_size = 2
 indent_style = space
 trim_trailing_whitespace = true
 
+# Set spacing around operators
+dotnet_style_whitespace_operators = space
+dotnet_style_preferred_spacing_for_operator = single
+
 # New line preferences
 end_of_line = lf
 insert_final_newline = false
