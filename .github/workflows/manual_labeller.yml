@@ -1,0 +1,34 @@
+name: Manual Pull Request Labeler
+
+on:
+  workflow_dispatch:
+
+jobs:
+  labelPullRequest:
+    name: Label Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Add labels
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labelsToAdd = ['approved']; // Add the 'approved' label
+            const labelsToRemove = ['not approved']; // Remove the 'not approved' label if present
+            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const context = github.context;
+            await octokit.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labelsToAdd
+            });
+            await octokit.rest.issues.removeLabel({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              name: 'not approved' // Remove the 'not approved' label
+            });
