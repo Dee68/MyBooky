@@ -46,14 +46,16 @@ namespace MyBookyWeb.Areas.Admin.Controllers
 		if (CompanyObj.Id == 0)
 		{
 		  _unitofWork.Company.Add(CompanyObj);
+		  TempData["success"] = "Company created successfully";
 		}
 		else
 		{
 		  _unitofWork.Company.Update(CompanyObj);
+		  TempData["success"] = "Company updated successfully";
 		}
 
 		_unitofWork.Save();
-		TempData["success"] = "Company created successfully";
+		
 		return RedirectToAction("Index");
 	  }
 	  else

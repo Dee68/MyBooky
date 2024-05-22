@@ -145,13 +145,13 @@ jobs:
     needs: [staging]
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      url: ${{ steps.deploy-main-projects-to-webapp.outputs.webapp-url }}
     steps:
       - name: Download artifact from main projects build job
         uses: actions/download-artifact@v4
         with:
           name: main-app
-         
+
       - name: Deploy main projects to Azure Web App
         id: deploy-main-projects-to-webapp
         uses: azure/webapps-deploy@v2
@@ -159,3 +159,20 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{env.MAIN_PROJECTS_DIR}}
+
+      # Run OWASP ZAP scan
+      - name: Run OWASP ZAP Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
+          rules_file_name: '.zap/rules.tsv'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload ZAP Report
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: /home/runner/work/_temp/zap/report.html
+
