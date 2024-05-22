@@ -90,8 +90,8 @@ jobs:
       - name: Install dotnet format
         run: dotnet tool install -g dotnet-format
 
-      - name: Run dotnet format
-        run: dotnet format ${{ env.MAIN_PROJECTS_DIR }}/MyBooky.sln --verbosity diagnostic
+      - name: Run dotnet format with verify-no-changes
+        run: dotnet format ${{ env.MAIN_PROJECTS_DIR }}/MyBooky.sln --verify-no-changes --verbosity diagnostic
         env:
           DOTNET_ROOT: /home/runner/.dotnet
 
