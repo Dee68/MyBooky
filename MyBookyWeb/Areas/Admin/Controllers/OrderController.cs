@@ -1,15 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
 using MyBooky.Utilities;
 using Stripe;
 using Stripe.Checkout;
-using Stripe.Climate;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace MyBookyWeb.Areas.Admin.Controllers

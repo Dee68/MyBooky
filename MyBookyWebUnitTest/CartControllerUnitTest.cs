@@ -1,23 +1,14 @@
-using Castle.Core.Logging;
-using Castle.Core.Smtp;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Logging;
 using Moq;
-using MyBooky.DataAccess.Repository;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
 using MyBooky.Models.ViewModels;
 using MyBookyWeb.Areas.Customer.Controllers;
-using Stripe.BillingPortal;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http;
 using System.Security.Claims;
-using Xunit;
 
 namespace MyBookyWebUnitTest
 {

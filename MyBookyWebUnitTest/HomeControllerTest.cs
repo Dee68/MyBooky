@@ -4,11 +4,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using MyBooky.DataAccess.Repository.IRepository;
 using MyBooky.Models;
-using MyBooky.Models.ViewModels;
 using MyBookyWeb.Areas.Customer.Controllers;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using Xunit;
 
 namespace MyBookyWebUnitTest
 {

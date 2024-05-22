@@ -1,9 +1,4 @@
 using MyBooky.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyBooky.DataAccess.Repository.IRepository
 {
