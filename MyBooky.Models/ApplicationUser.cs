@@ -7,19 +7,19 @@ namespace MyBooky.Models
 {
   public class ApplicationUser : IdentityUser
   {
-    [Required, MaxLength(50)]
-    public string Name { get; set; }
+	[Required, MaxLength(50)]
+	public string Name { get; set; }
 
-    public string? StreetAddress { get; set; }
-    public string? City { get; set; }
-    public string? State { get; set; }
-    public string? PostalCode { get; set; }
-    public int? CompanyId { get; set; }
-    [ForeignKey("CompanyId")]
-    [ValidateNever]
-    public Company? Company { get; set; }
-    [NotMapped]
-    public string Role { get; set; }
+	public string? StreetAddress { get; set; }
+	public string? City { get; set; }
+	public string? State { get; set; }
+	public string? PostalCode { get; set; }
+	public int? CompanyId { get; set; }
+	[ForeignKey("CompanyId")]
+	[ValidateNever]
+	public Company? Company { get; set; }
+	[NotMapped]
+	public string Role { get; set; }
 
 
   }

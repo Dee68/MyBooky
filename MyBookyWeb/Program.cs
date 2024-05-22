@@ -21,17 +21,17 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("Conn")));
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(100);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+  options.IdleTimeout = TimeSpan.FromMinutes(100);
+  options.Cookie.HttpOnly = true;
+  options.Cookie.IsEssential = true;
 });
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 
 builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = true;
-    options.Password.RequiredLength = 8;
+  options.SignIn.RequireConfirmedAccount = true;
+  options.Password.RequiredLength = 8;
 
 }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
@@ -40,14 +40,14 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 builder.Services.AddScoped<IUserEmailStore<IdentityUser>, UserStore<IdentityUser, IdentityRole, ApplicationDbContext, string>>();
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = $"/Identity/Account/Login";
-    options.LogoutPath = $"/Identity/Account/Logout";
-    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+  options.LoginPath = $"/Identity/Account/Login";
+  options.LogoutPath = $"/Identity/Account/Logout";
+  options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
 });
 builder.Services.AddAuthentication().AddFacebook(option =>
 {
-    option.AppId = "2867553820077119";
-    option.AppSecret = "4cf792a7af3cc6de703796a2e8bec3de";
+  option.AppId = "2867553820077119";
+  option.AppSecret = "4cf792a7af3cc6de703796a2e8bec3de";
 });
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IUnitofWork, UnitofWork>();
@@ -60,9 +60,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+  app.UseExceptionHandler("/Home/Error");
+  // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+  app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -80,15 +80,15 @@ SeedDatabase();
 app.MapRazorPages();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
+	name: "default",
+	pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
 void SeedDatabase()
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
-        dbInitializer.Initialize();
-    }
+  using (var scope = app.Services.CreateScope())
+  {
+	var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+	dbInitializer.Initialize();
+  }
 }

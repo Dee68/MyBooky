@@ -2,8 +2,8 @@ using MyBooky.Models;
 
 namespace MyBooky.DataAccess.Repository.IRepository
 {
-    public interface IApplicationUserRepository : IRepository<ApplicationUser>
-    {
-        public void Update(ApplicationUser applicationUser);
-    }
+  public interface IApplicationUserRepository : IRepository<ApplicationUser>
+  {
+	public void Update(ApplicationUser applicationUser);
+  }
 }

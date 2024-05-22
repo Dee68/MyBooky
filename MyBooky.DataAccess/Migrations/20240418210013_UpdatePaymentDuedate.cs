@@ -4,31 +4,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyBookyWeb.Migrations
 {
-    /// <inheritdoc />
-    public partial class UpdatePaymentDuedate : Migration
-    {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "PaymentDueDate",
-                table: "OrderHeads",
-                type: "datetime2",
-                nullable: false,
-                oldClrType: typeof(DateOnly),
-                oldType: "date");
-        }
+  /// <inheritdoc />
+  public partial class UpdatePaymentDuedate : Migration
+  {
+	/// <inheritdoc />
+	protected override void Up(MigrationBuilder migrationBuilder)
+	{
+	  migrationBuilder.AlterColumn<DateTime>(
+		  name: "PaymentDueDate",
+		  table: "OrderHeads",
+		  type: "datetime2",
+		  nullable: false,
+		  oldClrType: typeof(DateOnly),
+		  oldType: "date");
+	}
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.AlterColumn<DateOnly>(
-                name: "PaymentDueDate",
-                table: "OrderHeads",
-                type: "date",
-                nullable: false,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-        }
-    }
+	/// <inheritdoc />
+	protected override void Down(MigrationBuilder migrationBuilder)
+	{
+	  migrationBuilder.AlterColumn<DateOnly>(
+		  name: "PaymentDueDate",
+		  table: "OrderHeads",
+		  type: "date",
+		  nullable: false,
+		  oldClrType: typeof(DateTime),
+		  oldType: "datetime2");
+	}
+  }
 }
