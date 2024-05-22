@@ -9,7 +9,7 @@ on:
       - master
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * * Europe/Dublin'  # Schedule to run daily after midnight in Dublin, Ireland time
+    - cron: '0 0 * * *'  # Schedule to run daily after midnight in Dublin, Ireland time
 
 env:
   AZURE_WEBAPP_NAME: mybooky
@@ -148,6 +148,8 @@ jobs:
     environment: 'Debugging'
     if: ${{ github.event_name == 'schedule' }}  # Condition to run only for scheduled events
     steps:
+      - name: Set timezone to Europe/Dublin
+        run: sudo timedatectl set-timezone Europe/Dublin
         # Run OWASP ZAP scan
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-full-scan@v0.4.0
