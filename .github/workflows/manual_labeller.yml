@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+
       - name: Add labels
         uses: actions/github-script@v4
         with:
@@ -18,17 +18,19 @@ jobs:
           script: |
             const labelsToAdd = ['approved']; // Add the 'approved' label
             const labelsToRemove = ['not approved']; // Remove the 'not approved' label if present
-            const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+            const github = context.github;
             const context = github.context;
-            await octokit.rest.issues.addLabels({
+            await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               labels: labelsToAdd
             });
-            await octokit.rest.issues.removeLabel({
+            await github.rest.issues.removeLabel({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               name: 'not approved' // Remove the 'not approved' label
             });
+
+          
