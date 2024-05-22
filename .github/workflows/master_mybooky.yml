@@ -133,7 +133,7 @@ jobs:
         run: echo "I am in the Development environment"
 
   staging:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [dev]
     environment: 'Staging'
     steps:
@@ -141,7 +141,7 @@ jobs:
         run: echo "I am in the Staging environment"
 
   production:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: [staging]
     environment:
       name: 'Production'
