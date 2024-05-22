@@ -166,6 +166,7 @@ jobs:
         with:
           target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
           rules_file_name: '.zap/rules.tsv'
+          docker_name: ddimie/bookstore:latest  #
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
