@@ -8,6 +8,8 @@ on:
     branches:
       - master
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * * Europe/Dublin'  # Schedule to run daily after midnight in Dublin, Ireland time
 
 env:
   AZURE_WEBAPP_NAME: mybooky
@@ -144,6 +146,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [dev]
     environment: 'Debugging'
+    if: ${{ github.event_name == 'schedule' }}  # Condition to run only for scheduled events
     steps:
         # Run OWASP ZAP scan
       - name: Run OWASP ZAP Scan
