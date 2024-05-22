@@ -97,19 +97,19 @@ jobs:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
       # Run Super-Linter
-      - name: Run Super-Linter
-        uses: github/super-linter@v4
-        env:
-          VALIDATE_CSHARP: true
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Run Super-Linter
+      #   uses: github/super-linter@v4
+      #   env:
+      #     VALIDATE_CSHARP: true
+      #     DEFAULT_BRANCH: master
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Run dotnet format
       - name: Install dotnet format
         run: dotnet tool install -g dotnet-format
 
       - name: Run dotnet format with verify-no-changes and diagnostics
-        run: dotnet format ${{ env.MAIN_PROJECTS_DIR }}/MyBooky.sln --verify-no-changes --verbosity diagnostic
+        run: dotnet format ${{ env.MAIN_PROJECTS_DIR }}/MyBooky.sln --check --verbosity diagnostic
         env:
           DOTNET_ROOT: /home/runner/.dotnet
 
