@@ -143,8 +143,9 @@ jobs:
     # Extract pass and fail counts from test results
       - name: Extract test results
         run: |
-          PASS_COUNT=$(grep -oP "Total tests: \K\d+" test_results.txt)
-          FAIL_COUNT=$(grep -oP "Failed: \K\d+" test_results.txt)
+          cat test_results.txt
+          PASS_COUNT=$(grep -oP "Total tests: \K\d+" test_results.txt || true)
+          FAIL_COUNT=$(grep -oP "Failed: \K\d+" test_results.txt || true)
           echo "Total tests: $PASS_COUNT"
           echo "Failures: $FAIL_COUNT"
 
