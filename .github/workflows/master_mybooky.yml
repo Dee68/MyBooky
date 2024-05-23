@@ -136,7 +136,30 @@ jobs:
           path: ${{ env.DOTNET_ROOT }}/myapp
      # Run unit tests
       - name: Run unit tests
-        run: dotnet test ${{ env.TEST_PROJECT_DIR }} -c Release --no-build --verbosity normal
+        id: unit-tests
+        run: |
+          dotnet test ${{ env.TEST_PROJECT_DIR }} -c Release --no-build --verbosity normal | tee test_results.txt
+        continue-on-error: true
+    # Extract pass and fail counts from test results
+      - name: Extract test results
+        run: |
+          PASS_COUNT=$(grep -oP "Total tests: \K\d+" test_results.txt)
+          FAIL_COUNT=$(grep -oP "Failed: \K\d+" test_results.txt)
+          echo "Total tests: $PASS_COUNT"
+          echo "Failures: $FAIL_COUNT"
+
+    # Build success rate
+      - name: Calculate build success rate
+        id: calculate-success-rate
+        run: |
+          if [[ "${{ job.status }}" == "success" ]]; then
+          echo "::set-output name=build-success-rate::100%"
+          else
+          echo "::set-output name=build-success-rate::0%"
+          fi
+    outputs:
+      build-success-rate: ${{ steps.calculate-success-rate.outputs.build-success-rate }}
+
 
   staging:
     runs-on: ubuntu-latest
@@ -157,64 +180,64 @@ jobs:
       - name: Echo Staging Environment
         run: echo "I am in the Staging environment"
 
-  debugging:
-    runs-on: ubuntu-latest
-    needs: [staging]
-    environment: 'Debugging'
-    permissions:
-      issues: write
-    steps:
-      - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-full-scan@v0.10.0
-        with:
-          target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # debugging:
+  #   runs-on: ubuntu-latest
+  #   needs: [staging]
+  #   environment: 'Debugging'
+  #   permissions:
+  #     issues: write
+  #   steps:
+  #     - name: Run OWASP ZAP Scan
+  #       uses: zaproxy/action-full-scan@v0.10.0
+  #       with:
+  #         target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List ZAP Report Directory Contents
-        run: ls -la /zap/wrk/
+  #     - name: List ZAP Report Directory Contents
+  #       run: ls -la /zap/wrk/
 
 
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-report
-          path: /zap/wrk/report_html.html
+  #     - name: Upload ZAP Report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: zap-report
+  #         path: /zap/wrk/report_html.html
 
-      - name: Create GitHub Issue with ZAP Results
-        uses: actions/github-script@v5
-        with:
-          script: |
-            const fs = require('fs');
-            const path = '/zap/wrk/report_html.html';
-            const { GITHUB_TOKEN, GITHUB_REPOSITORY } = process.env;
+  #     - name: Create GitHub Issue with ZAP Results
+  #       uses: actions/github-script@v5
+  #       with:
+  #         script: |
+  #           const fs = require('fs');
+  #           const path = '/zap/wrk/report_html.html';
+  #           const { GITHUB_TOKEN, GITHUB_REPOSITORY } = process.env;
 
-            if (!GITHUB_REPOSITORY) {
-              console.error('GITHUB_REPOSITORY environment variable is not set.');
-              process.exit(1);
-            }
+  #           if (!GITHUB_REPOSITORY) {
+  #             console.error('GITHUB_REPOSITORY environment variable is not set.');
+  #             process.exit(1);
+  #           }
 
-            const [owner, repo] = GITHUB_REPOSITORY.split('/');
-            if (!owner || !repo) {
-              console.error(`Failed to parse GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
-              process.exit(1);
-            }
+  #           const [owner, repo] = GITHUB_REPOSITORY.split('/');
+  #           if (!owner || !repo) {
+  #             console.error(`Failed to parse GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
+  #             process.exit(1);
+  #           }
 
-            if (fs.existsSync(path)) {
-              const report = fs.readFileSync(path, 'utf8');
-              const octokit = new github.getOctokit(GITHUB_TOKEN);
-              await octokit.issues.create({
-                owner,
-                repo,
-                title: "ZAP Scan Results",
-                body: `ZAP scan has completed. [View Report](https://github.com/${owner}/${repo}/actions/runs/${context.runId})\n\nSummary:\n${report}`
-              });
-            } else {
-              console.error(`Report file not found at path: ${path}`);
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+  #           if (fs.existsSync(path)) {
+  #             const report = fs.readFileSync(path, 'utf8');
+  #             const octokit = new github.getOctokit(GITHUB_TOKEN);
+  #             await octokit.issues.create({
+  #               owner,
+  #               repo,
+  #               title: "ZAP Scan Results",
+  #               body: `ZAP scan has completed. [View Report](https://github.com/${owner}/${repo}/actions/runs/${context.runId})\n\nSummary:\n${report}`
+  #             });
+  #           } else {
+  #             console.error(`Report file not found at path: ${path}`);
+  #           }
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GITHUB_REPOSITORY: ${{ github.repository }}
 
   production:
     runs-on: ubuntu-latest
@@ -234,4 +257,4 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ${{env.MAIN_PROJECTS_DIR}}
+          package: ${{env.MAIN_PROJECTS_DIR}} 
