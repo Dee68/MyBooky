@@ -166,14 +166,14 @@ jobs:
         uses: zaproxy/action-full-scan@v0.10.0
         with:
           target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Upload ZAP Report
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: zap-report
-      #     path: /home/runner/work/_temp/zap/report.html
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: /home/runner/work/_temp/zap/report.html
 
   production:
     runs-on: ubuntu-latest
