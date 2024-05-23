@@ -16,7 +16,6 @@ dotnet_style_whitespace_operators = space
 dotnet_style_preferred_spacing_for_operator = single
 
 # New line preferences
-end_of_line = lf
 insert_final_newline = false
 
 #### .NET Coding Conventions ####
