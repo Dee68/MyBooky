@@ -166,11 +166,11 @@ jobs:
         uses: zaproxy/action-full-scan@v0.10.0
         with:
           target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
-          rules_file_name: '.zap/rules.tsv'
-          docker_name: ddimie/bookstore:latest
-          scan_policy_name: 'Light'  # Adjust the scan policy to optimize performance
-          max_scan_duration: 1800  # Set the maximum duration of the scan to 30 minutes (1800 seconds)
-          additional_options: '--spider-max-duration=600 --spider-max-children=5'  # Additional options to further optimize the scan
+          # rules_file_name: '.zap/rules.tsv'
+          # docker_name: ddimie/bookstore:latest
+          # scan_policy_name: 'Light'  # Adjust the scan policy to optimize performance
+          # max_scan_duration: 1800  # Set the maximum duration of the scan to 30 minutes (1800 seconds)
+          # additional_options: '--spider-max-duration=600 --spider-max-children=5'  # Additional options to further optimize the scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
