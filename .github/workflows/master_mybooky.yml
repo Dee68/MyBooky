@@ -73,7 +73,6 @@ jobs:
           branch: ${{ env.BRANCH_NAME }}
           title: "Automated code formatting fixes"
           body: "This pull request contains automated code formatting fixes."
-        if: success() && steps.format.outputs.branch_name != ''
 
 
   dev:
