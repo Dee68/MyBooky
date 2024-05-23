@@ -161,6 +161,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [staging]
     environment: 'Debugging'
+    permissions:
+      issues: write
     steps:
       - name: Run OWASP ZAP Scan
         uses: zaproxy/action-full-scan@v0.10.0
@@ -174,6 +176,24 @@ jobs:
         with:
           name: zap-report
           path: /home/runner/work/_temp/zap/report.html
+
+      - name: Create GitHub Issue with ZAP Results
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const fs = require('fs');
+            const path = '/home/runner/work/_temp/zap/report.html';
+            const report = fs.readFileSync(path, 'utf8');
+            const { GITHUB_TOKEN } = process.env;
+            const octokit = new github.getOctokit(GITHUB_TOKEN);
+            await octokit.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: "ZAP Scan Results",
+              body: `ZAP scan has completed. [View Report](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})\n\nSummary:\n${report}`
+            });
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   production:
     runs-on: ubuntu-latest
