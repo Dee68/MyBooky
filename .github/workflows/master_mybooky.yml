@@ -177,7 +177,7 @@ jobs:
 
   production:
     runs-on: ubuntu-latest
-    needs: [stagging]
+    needs: [staging]
     environment:
       name: 'Production'
       url: ${{ steps.deploy-main-projects-to-webapp.outputs.webapp-url }}
