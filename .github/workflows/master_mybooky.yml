@@ -154,12 +154,14 @@ jobs:
         id: calculate-success-rate
         run: |
           if [[ "${{ job.status }}" == "success" ]]; then
-          echo "::set-output name=build-success-rate::100%"
+          echo "BUILD_SUCCESS_RATE=100%" >> $GITHUB_ENV
           else
-          echo "::set-output name=build-success-rate::0%"
+          echo "BUILD_SUCCESS_RATE=0%" >> $GITHUB_ENV
           fi
-    outputs:
-      build-success-rate: ${{ steps.calculate-success-rate.outputs.build-success-rate }}
+      - name: Access build success rate
+        run: |
+            echo "Build success rate: $BUILD_SUCCESS_RATE"
+
 
 
   staging:
