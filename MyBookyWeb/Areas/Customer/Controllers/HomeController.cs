@@ -16,11 +16,6 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 	private readonly ILogger<HomeController> _logger = logger;
 	private readonly IUnitofWork _unitofWork = unitofWork;
 
-	//public IActionResult Index()
-	//{
-	//    IEnumerable<Product> products = _unitofWork.Product.GetAll(includeProperties: "Category,ProductImages");
-	//    return View(products);
-	//}
 	[HttpGet]
 	public IActionResult Index(string? query, int page = 1, int pageSize = 4)
 	{
@@ -28,6 +23,7 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 	  IQueryable<Product> products = productsEnumerable.AsQueryable();
 	  if (products == null || !products.Any())
 	  {
+		_logger.LogError("Books not found");
 		return Problem("There are no books yet in the database", null, 404);
 	  }
 	  //Filter result based on search query
@@ -35,10 +31,10 @@ namespace MyBookyWeb.Areas.Customer.Controllers
 	  if (!String.IsNullOrEmpty(query))
 	  {
 		query = query.Trim().ToLower();
-		products = products.Where(q => q.Title!.ToLower().Contains(query)
-		|| q.Author!.ToLower().Contains(query)
-		|| q.ISBN!.Contains(query)
-		|| q.Category!.Name!.ToLower().Contains(query));
+		products = products.Where(q => !(!q.Title!.Contains(query, StringComparison.CurrentCultureIgnoreCase)
+		&& !q.Author!.Contains(query, StringComparison.CurrentCultureIgnoreCase)
+		&& !q.ISBN!.Contains(query)
+		&& !q.Category!.Name!.ToLower().Contains(query)));
 	  }
 	  //paginate result
 	  var paginatedProducts = products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
