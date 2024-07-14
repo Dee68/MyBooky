@@ -183,64 +183,64 @@ jobs:
       - name: Echo Staging Environment
         run: echo "I am in the Staging environment"
 
-  debugging:
-    runs-on: ubuntu-latest
-    needs: [staging]
-    environment: 'Debugging'
-    permissions:
-      issues: write
-    steps:
-      - name: Run OWASP ZAP Scan
-        uses: zaproxy/action-full-scan@v0.10.0
-        with:
-          target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # debugging:
+  #   runs-on: ubuntu-latest
+  #   needs: [staging]
+  #   environment: 'Debugging'
+  #   permissions:
+  #     issues: write
+  #   steps:
+  #     - name: Run OWASP ZAP Scan
+  #       uses: zaproxy/action-full-scan@v0.10.0
+  #       with:
+  #         target: 'https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net'
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: List ZAP Report Directory Contents
-        run: ls -la /zap/wrk/
+  #     - name: List ZAP Report Directory Contents
+  #       run: ls -la /zap/wrk/
 
 
-      - name: Upload ZAP Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: zap-report
-          path: /zap/wrk/report_html.html
+  #     - name: Upload ZAP Report
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: zap-report
+  #         path: /zap/wrk/report_html.html
 
-      - name: Create GitHub Issue with ZAP Results
-        uses: actions/github-script@v5
-        with:
-          script: |
-            const fs = require('fs');
-            const path = '/zap/wrk/report_html.html';
-            const { GITHUB_TOKEN, GITHUB_REPOSITORY } = process.env;
+  #     - name: Create GitHub Issue with ZAP Results
+  #       uses: actions/github-script@v5
+  #       with:
+  #         script: |
+  #           const fs = require('fs');
+  #           const path = '/zap/wrk/report_html.html';
+  #           const { GITHUB_TOKEN, GITHUB_REPOSITORY } = process.env;
 
-            if (!GITHUB_REPOSITORY) {
-              console.error('GITHUB_REPOSITORY environment variable is not set.');
-              process.exit(1);
-            }
+  #           if (!GITHUB_REPOSITORY) {
+  #             console.error('GITHUB_REPOSITORY environment variable is not set.');
+  #             process.exit(1);
+  #           }
 
-            const [owner, repo] = GITHUB_REPOSITORY.split('/');
-            if (!owner || !repo) {
-              console.error(`Failed to parse GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
-              process.exit(1);
-            }
+  #           const [owner, repo] = GITHUB_REPOSITORY.split('/');
+  #           if (!owner || !repo) {
+  #             console.error(`Failed to parse GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}`);
+  #             process.exit(1);
+  #           }
 
-            if (fs.existsSync(path)) {
-              const report = fs.readFileSync(path, 'utf8');
-              const octokit = new github.getOctokit(GITHUB_TOKEN);
-              await octokit.issues.create({
-                owner,
-                repo,
-                title: "ZAP Scan Results",
-                body: `ZAP scan has completed. [View Report](https://github.com/${owner}/${repo}/actions/runs/${context.runId})\n\nSummary:\n${report}`
-              });
-            } else {
-              console.error(`Report file not found at path: ${path}`);
-            }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
+  #           if (fs.existsSync(path)) {
+  #             const report = fs.readFileSync(path, 'utf8');
+  #             const octokit = new github.getOctokit(GITHUB_TOKEN);
+  #             await octokit.issues.create({
+  #               owner,
+  #               repo,
+  #               title: "ZAP Scan Results",
+  #               body: `ZAP scan has completed. [View Report](https://github.com/${owner}/${repo}/actions/runs/${context.runId})\n\nSummary:\n${report}`
+  #             });
+  #           } else {
+  #             console.error(`Report file not found at path: ${path}`);
+  #           }
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         GITHUB_REPOSITORY: ${{ github.repository }}
 
   production:
     runs-on: ubuntu-latest
